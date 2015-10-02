@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html lang="en" ng-app="myApp" class="no-js"> <!--<![endif]-->
+<!--[if lt IE 7]>      <html lang="nb_NO" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="nb_NO" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="nb_NO" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="nb_NO" ng-app="myApp" class="no-js"> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>My AngularJS App</title>
+  <title>Din sykkelvei</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
@@ -15,22 +15,29 @@
   <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
-  <style type="text/css">
-    html, body { height: 100%; margin: 0; padding: 0; }
-    #map { height: 100%; }
-  </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <h1>Din sykkelvei</h1>
-    </div>
+    <div class="col-md-12">
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">Din sykkelvei</a>
+          </div>
 
-    <ul class="menu">
-      <li><a href="#/view1">view1</a></li>
-      <li><a href="#/view2">view2</a></li>
-    </ul>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li><a href="#/">Hjem</a></li>
+              <li><a href="#/view2">Kart</a></li>
+              <li><a href="#/view3">Info</a></li>
+            </ul>
+
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
+    </div>
 
     <!--[if lt IE 7]>
         <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
@@ -52,8 +59,7 @@
   <script src="components/version/version.js"></script>
   <script src="components/version/version-directive.js"></script>
   <script src="components/version/interpolate-filter.js"></script>
-  <script async defer
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgydMxEISwxJSnpXDEiNhWSbYtZnRWGeg&callback=initMap">
-  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgydMxEISwxJSnpXDEiNhWSbYtZnRWGeg&callback=initMap"
+          async defer></script>
 </body>
 </html>

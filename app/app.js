@@ -1,17 +1,21 @@
 'use strict';
 
 // Declare app level module which depends on views, and components
-angular.module('myApp', [
+var app = angular.module('myApp', [
   'ngRoute',
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider
-      .when('/view1', {
-        templateUrl: 'views/view1.html',
-        controller: 'controllers/view1'
+      .when('/', {
+          templateUrl: 'views/view1.html',
+          controller: 'view1'
       })
       .when('/view2', {
         templateUrl: 'views/view2.html',
-        controller: 'controllers/view2'
+        controller: 'view2'
+      })
+      .when('/view3', {
+        templateUrl: 'views/view3.html',
+        controller: 'view3'
       });
 }]);
