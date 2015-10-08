@@ -12,3 +12,29 @@ html, body {
 #map {
   height: 600px;
 }
+
+.category_container{
+  padding: 2em;
+  float:left;
+  width: 15%;
+  border-style:solid;
+  border-width: 1px;
+  border-color: black;
+  border-right-style: none;
+  background-color:beige;
+  box-shadow: 10px 10px 5px #888888;
+}
+
+.category_element {
+  cursor:pointer;
+}
+.category_element:hover{
+  cursor:hand;
+}
+
+.form_element {
+  float:left;
+  background: lightgrey;
+  border-width: 1px;
+  border-style:solid;
+}

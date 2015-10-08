@@ -1,1 +1,55 @@
+<div id="categories" class="category_container">
+    <legend>Kategorier</legend>
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" ng-href="#collapseOne" target="_self" aria-expanded="true" aria-controls="collapseOne">
+                        Heat Maps
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                    <a id="speedVar" class="category_element" ng-click="selected('Fartsendring')">Fartsendring</a>
+                    <a id="popularity" class="category_element" ng-click="selected('Popularitet')">Popularitet</a>
+                    <a id="Veifeil" class="category_element" ng-click="selected('Veifeil')">Veifeil</a>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingTwo">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" target="_self" aria-expanded="false" aria-controls="collapseTwo">
+                        Punkter
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                <div class="panel-body">
+                    Popularitet
+                </div>
+            </div>
+        </div>
+    </div>
+    Du har valgt: <span style="float:right"><strong>{{currentlySelected}}</strong></span>
+</div>
+
+<div id="gmaps_panel" class="category_container" style="float:right; border-left-style: none; border-right-style:solid">
+    <legend>Filtrer </legend>
+    <input id="searchField" class="controls" type="text" placeholder="Search locations" style="margin-bottom:1em">
+    <div style="height:60px; margin-bottom: 1em">
+        <div class="input-group">
+            <span class="input-group-addon">Fra: </span><input class="form-control" type="date" id="fromDate"/> <input class="form-control" type="time" id="fromTime"/>
+        </div>
+    </div>
+
+    <div style="height:60px; margin-bottom: 1em">
+        <div class="input-group">
+            <span class="input-group-addon">Til: </span><input class="form-control" type="date" id="toDate"/> <input class="form-control" type="time" id="toTime"/>
+        </div>
+    </div>
+</div>
+
 <div id="map"></div>
+
