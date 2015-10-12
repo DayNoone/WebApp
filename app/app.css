@@ -8,21 +8,131 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  background-color: #EAEAEA;
+  overflow-x: hidden;
+}
+#view {
+  height: 93%;
 }
 #map {
-  height: 600px;
+  height: 100%;
+  z-index: 0;
 }
 
 .category_container{
+  position: absolute;
   padding: 2em;
   float:left;
   width: 15%;
-  border-style:solid;
-  border-width: 1px;
-  border-color: black;
+  height: 93%;
   border-right-style: none;
-  background-color: #286aaf;
-  box-shadow: 10px 10px 5px #888888;
+  background-color: #5178A0;
+  color: white;
+  z-index: 1;
+  -moz-box-shadow:    10px 0 20px -10px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 10px 0 20px -10px rgba(0, 0, 0, 0.3);
+  box-shadow:         10px 0 20px -10px rgba(0, 0, 0, 0.3);
+  opacity: 0.90;
+}
+
+/*Categories slider */
+.slide_categories_active {
+  -webkit-animation-timing-function: ease-out;
+  -webkit-animation: category_slide_left 600ms ; /* Chrome, Safari, Opera */
+  animation: category_slide_left 600ms ;
+  left: 0px;
+}
+.slide_categories_inactive {
+  -webkit-animation-timing-function: ease-in;
+  -webkit-animation: category_slide_right 600ms ; /* Chrome, Safari, Opera */
+  animation: category_slide_right 600ms ;
+  left: -15%;
+}
+/* Chrome, Safari, Opera */
+@-webkit-keyframes category_slide_left {
+  from {left: -15%;}
+  to {left: 0;}
+}
+/* Standard syntax */
+@keyframes category_slide_left {
+  from {left: -15%;}
+  to {left: 0;}
+}
+/* Chrome, Safari, Opera */
+@-webkit-keyframes category_slide_right {
+  from {left: 0;}
+  to {left: -15%;}
+}
+/* Standard syntax */
+@keyframes category_slide_right {
+  from {left: 0;}
+  to {left: -15%;}
+}
+/*Gmaps slider */
+.slide_gmaps_active {
+  -webkit-animation-timing-function: ease-out;
+  -webkit-animation: gmaps_slide_left 600ms ; /* Chrome, Safari, Opera */
+  animation: gmaps_slide_left 600ms ;
+  right: 0px;
+}
+.slide_gmaps_inactive {
+  -webkit-animation-timing-function: ease-in;
+  -webkit-animation: gmaps_slide_right 600ms ; /* Chrome, Safari, Opera */
+  animation: gmaps_slide_right 600ms ;
+  right: -15%;
+}
+/* Chrome, Safari, Opera */
+@-webkit-keyframes gmaps_slide_left {
+  from {right: -15%;}
+  to {right: 0;}
+}
+/* Standard syntax */
+@keyframes gmaps_slide_left {
+  from {right: -15%;}
+  to {right: 0;}
+}
+/* Chrome, Safari, Opera */
+@-webkit-keyframes gmaps_slide_right {
+  from {right: 0;}
+  to {right: -15%;}
+}
+/* Standard syntax */
+@keyframes gmaps_slide_right {
+  from {right: 0;}
+  to {right: -15%;}
+}
+
+
+#categories_button{
+  left: 100%;
+  -moz-box-shadow:    10px 0 20px -10px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 10px 0 20px -10px rgba(0, 0, 0, 0.3);
+  box-shadow:         10px 0 20px -10px rgba(0, 0, 0, 0.3);
+  line-height: 20px;
+}
+
+#gmaps_panel_button{
+  right: 100%;
+  -moz-box-shadow:    -10px 0 20px -10px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: -10px 0 20px -10px rgba(0, 0, 0, 0.3);
+  box-shadow:         -10px 0 20px -10px rgba(0, 0, 0, 0.3);
+}
+#categories_button, #gmaps_panel_button {
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  height: 60px;
+  background-color: #5178A0;
+  z-index: 2;
+}
+#categories_button, #gmaps_panel_button span {
+  font-size: 20px;
+  line-height: 3;
+}
+#navbar {
+  overflow: hidden;
+  margin-left: 15%;
+  height: 7%;
 }
 
 .category_element {

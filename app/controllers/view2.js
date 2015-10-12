@@ -1,8 +1,16 @@
 app.controller('view2', function($scope) {
+    $scope.categories_slide = function(){
+        $scope.categoryActive = !$scope.categoryActive;
+    }
+    $scope.gmaps_slide = function(){
+        $scope.gmapsActive = !$scope.gmapsActive;
+    }
+
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 14,
         center: new google.maps.LatLng(63.4174652, 10.4043239),
-        mapTypeId: google.maps.MapTypeId.TERRAIN
+        mapTypeId: google.maps.MapTypeId.TERRAIN,
+        disableDefaultUI: true
     });
 
     $scope.selectedHeatmap = function(itemId) {
