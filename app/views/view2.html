@@ -11,9 +11,9 @@
             </div>
             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                 <div class="panel-body">
-                    <a id="speedVar" class="category_element" ng-click="selected('Fartsendring')">Fartsendring</a>
-                    <a id="popularity" class="category_element" ng-click="selected('Popularitet')">Popularitet</a>
-                    <a id="Veifeil" class="category_element" ng-click="selected('Veifeil')">Veifeil</a>
+                    <a id="speedVar" class="category_element" ng-click="selectedHeatmap('speedVar')">Fartsendring</a> <br>
+                    <a id="popularity" class="category_element" ng-click="selectedHeatmap('popularity')">Popularitet</a><br>
+                    <a id="Veifeil" class="category_element" ng-click="selectedHeatmap('Veifeil')">Veifeil</a><br>
                 </div>
             </div>
         </div>
@@ -38,17 +38,32 @@
 <div id="gmaps_panel" class="category_container" style="float:right; border-left-style: none; border-right-style:solid">
     <legend>Filtrer </legend>
     <input id="searchField" class="controls" type="text" placeholder="Search locations" style="margin-bottom:1em">
-    <div style="height:60px; margin-bottom: 1em">
+    <div style="height:60px;">
         <div class="input-group">
-            <span class="input-group-addon">Fra: </span><input class="form-control" type="date" id="fromDate"/> <input class="form-control" type="time" id="fromTime"/>
+            <span class="input-group-addon">Fra: </span><input class="form-control" type="date" id="fromDate" ng-change="testChange()" ng-model="TEST1"/>
         </div>
     </div>
 
     <div style="height:60px; margin-bottom: 1em">
         <div class="input-group">
-            <span class="input-group-addon">Til: </span><input class="form-control" type="date" id="toDate"/> <input class="form-control" type="time" id="toTime"/>
+            <span class="input-group-addon">Til: </span><input class="form-control" type="date" id="toDate" ng-change="testChange()" ng-model="TEST2"/>
         </div>
     </div>
+
+    <div style="height:60px; margin-bottom: 1em">
+        <div class="input-group">
+            <span class="input-group-addon">Tidsrom: </span><input class="form-control" type="time" id="fromTime" value="00:00"/> <input class="form-control" type="time" id="toTime" value="23:59"/>
+                </div>
+        </div>
+
+    <div style="height:60px; margin-bottom: 1em">
+        <div class="input-group">
+            <span class="input-group-addon">Punktradius </span><input class="form-control" type="range" value = '20' max = "20" min = "2" ng-model="pointRadius">
+        </div>
+    </div>
+
+    <button type="button" ng-click="changePointRadius()">Oppdater radius</button>
+
 </div>
 
 <div id="map"></div>
