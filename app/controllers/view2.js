@@ -27,7 +27,7 @@ app.controller('view2', function($scope) {
 
             switch(itemId) {
                 case "speedVar":
-                    data = getPoints();
+                    data = getPoints(loadDummyData());
                     break;
                 case "popularity":
                     data = getPopularityPoints();
@@ -40,10 +40,39 @@ app.controller('view2', function($scope) {
         }
     }
 
+    $scope.selectedLines = function(itemId) {
+        if($scope.currentlySelected == "Linjer " + itemId) {
+            $scope.currentlySelected = "";
+            togglePath();
+        }else{
+            $scope.currentlySelected = "Linjer " + itemId;
+            path = getPath(loadDummyPath());
+            tripPath = new google.maps.Polyline({
+                path: path,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+            tripPath.setMap(map);
+        }
+
+    }
+    function togglePath() {
+        tripPath.setMap(tripPath.getMap() ? null : map);
+    }
+
+
     $scope.pointRadius = 20;
+
+    $scope.fromTime = "00:00";
+    $scope.toTime = "23:59";
 
     $scope.currentlySelected = "";
     var data = getFaultPoints();
+    var path = getPath();
+    pathArray = new google.maps.MVCArray(path);
+
     pointArray = new google.maps.MVCArray(data);
     var heatmap = new google.maps.visualization.HeatmapLayer({
         data: pointArray,
@@ -55,10 +84,18 @@ app.controller('view2', function($scope) {
         heatmap.setMap(heatmap.getMap() ? null : map);
     }
 
-    function getPoints() {
-        console.log(fromTime);
+    var tripPath = new google.maps.Polyline({
+        path: pathArray,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+    });
+
+
+
+    function getPoints(dummyData) {
         dataPoints = []
-        dummyData = loadDummyData();
         var i = 0;
         angular.forEach(dummyData, function(data){
             if(inInterval(dateComparify(data.Date), data.Time.replace(/:/g, ''))) {
@@ -68,8 +105,21 @@ app.controller('view2', function($scope) {
         })
         console.log(dataPoints.length);
         return dataPoints;
-
     };
+
+    function getPath(dummyData) {
+        dataPoints = [];
+        var i = 0;
+        angular.forEach(dummyData, function(path){
+            if(inInterval(dateComparify(path.Date), path.Time.replace(/:/g, ''))) {
+                dataPoints[i] = new google.maps.LatLng(path.Latitude, path.Longitude);
+                i++;
+            }
+        })
+        console.log(dataPoints.length);
+        return dataPoints;
+    }
+
     // Convert from dd/mm/yyyy to yyyymmdd
     function dateComparify(date) {
         var in1 = date.substring(6,10);
@@ -91,22 +141,34 @@ app.controller('view2', function($scope) {
      */
     function inInterval(date, time) {
         var fromDate = document.getElementById('fromDate').value.replace(/-/g,'');
-        var fromTime = document.getElementById('fromTime').value.replace(/:/,'');
         var toDate = document.getElementById('toDate').value.replace(/-/g,'');
-        var toTime = document.getElementById('toTime').value.replace(/:/,'');
+        if(!timeInterval(time))
+            return false;
 
-        if(fromDate == "" && toDate == "") {
+        if(fromDate == "" && toDate == "")
             return true;
-        }
-        else if(fromDate == "") {
+        else if(fromDate == "")
             return date <= toDate;
-        }
-        else if (toDate == "") {
+        else if (toDate == "")
             return date >= fromDate;
-        }
         else
             return date >= fromDate && date <= toDate;
     }
+
+    function timeInterval(time) {
+        var fromTime = document.getElementById('fromTime').value.replace(/:/,'');
+        var toTime = document.getElementById('toTime').value.replace(/:/,'');
+        if(fromTime == "" && toTime == "")
+            return true;
+        else if(fromTime == "")
+            return time <= toTime;
+        else if (toTime == "")
+            return time >= fromTime;
+        else
+            return time >= fromTime && time <= toTime;
+    }
+
+
 
     function getFaultPoints() {
         return [
@@ -194,6 +256,12 @@ app.controller('view2', function($scope) {
         heatmap.set('radius', radius);
     }
 
+    $scope.resetFilter = function() {
+        document.getElementById("fromDate").value = "";
+        document.getElementById("toDate").value = "";
+        document.getElementById("fromTime").value = "";
+        document.getElementById("toTime").value = "";
+    }
 
     var loadDummyData = function() {
         return [{"Id":1,"Latitude":63.43156118,"Longitude":10.39528644,"Date":"01/09/2015","Time":"10:04:34"},
@@ -429,5 +497,20 @@ app.controller('view2', function($scope) {
             {"Id":231,"Latitude":63.43491315,"Longitude":10.36989213,"Date":"18/04/2016","Time":"00:04:34"},
             {"Id":232,"Latitude":63.41211914,"Longitude":10.40076508,"Date":"19/04/2016","Time":"01:04:34"},
             {"Id":233,"Latitude":63.41631705,"Longitude":10.38094347,"Date":"20/04/2016","Time":"02:04:34"}]};
+
+
+    var loadDummyPath = function() {
+        return [{"Id":1,"Latitude":63.41716241,"Longitude":10.40317688,"Date":"01/10/2015","Time":"10:04:34"},
+            {"Id":1,"Latitude":63.41714442,"Longitude":10.40308844,"Date":"01/10/2015","Time":"10:04:35"},
+            {"Id":1,"Latitude":63.41717771,"Longitude":10.40312403,"Date":"01/10/2015","Time":"10:04:36"},
+            {"Id":1,"Latitude":63.41706055,"Longitude":10.40318504,"Date":"01/10/2015","Time":"10:04:37"},
+            {"Id":1,"Latitude":63.41706468,"Longitude":10.40307434,"Date":"01/10/2015","Time":"10:04:38"},
+            {"Id":1,"Latitude":63.41712092,"Longitude":10.40315298,"Date":"01/10/2015","Time":"10:04:39"},
+            {"Id":1,"Latitude":63.41709071,"Longitude":10.40316451,"Date":"01/10/2015","Time":"10:04:40"},
+            {"Id":1,"Latitude":63.41712077,"Longitude":10.40282002,"Date":"01/10/2015","Time":"10:04:41"},
+            {"Id":1,"Latitude":63.41713666,"Longitude":10.40287106,"Date":"01/10/2015","Time":"10:04:42"},
+            {"Id":1,"Latitude":63.41709859,"Longitude":10.40295472,"Date":"01/10/2015","Time":"10:04:43"}]};
+
+
 
 });
