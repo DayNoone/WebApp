@@ -21,13 +21,13 @@
             <div class="panel-heading" role="tab" id="headingTwo">
                 <h4 class="panel-title">
                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" target="_self" aria-expanded="false" aria-controls="collapseTwo">
-                        Punkter
+                        Rute
                     </a>
                 </h4>
             </div>
             <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                 <div class="panel-body">
-                    Popularitet
+                    <a id="linesPopularity" class="category_element" ng-click="selectedLines('Popularitet')">Popularitet</a><br>
                 </div>
             </div>
         </div>
@@ -52,10 +52,13 @@
 
     <div style="height:60px; margin-bottom: 1em">
         <div class="input-group">
-            <span class="input-group-addon">Tidsrom: </span><input class="form-control" type="time" id="fromTime" value="00:00"/> <input class="form-control" type="time" id="toTime" value="23:59"/>
+            <span class="input-group-addon">Tidsrom: </span>
+            <input class="form-control" type="time" id="fromTime" value="00:00"ng-model="fromTime" ng-change="testChange()"/>
+            <input class="form-control" type="time" id="toTime" ng-model="toTime" value="23:59" ng-change="testChange()"/>
                 </div>
         </div>
 
+    <!--
     <div style="height:60px; margin-bottom: 1em">
         <div class="input-group">
             <span class="input-group-addon">Punktradius </span><input class="form-control" type="range" value = '20' max = "20" min = "2" ng-model="pointRadius">
@@ -63,6 +66,9 @@
     </div>
 
     <button type="button" ng-click="changePointRadius()">Oppdater radius</button>
+-->
+    <button type="button" class="btn" style="background: dodgerblue; color: white" ng-click="resetFilter()">Nullstill</button>
+
 
 </div>
 
