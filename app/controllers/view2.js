@@ -1,7 +1,9 @@
 app.controller('view2', function($scope) {
+    $scope.categoryActive = true
     $scope.categories_slide = function(){
         $scope.categoryActive = !$scope.categoryActive;
     }
+    $scope.gmapsActive = true;
     $scope.gmaps_slide = function(){
         $scope.gmapsActive = !$scope.gmapsActive;
     }

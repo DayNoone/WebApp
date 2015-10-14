@@ -1,4 +1,4 @@
-<div id="categories" ng-class="{false: 'slide_categories_active', true: 'slide_categories_inactive'}[categoryActive]" class="slide_categories_active category_container">
+<div id="categories" ng-class="{false: 'slide_categories_inactive', true: 'slide_categories_active'}[categoryActive]" class="slide_categories_active category_container">
 
     <legend style="color: white;">Kategorier</legend>
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -34,10 +34,10 @@
         </div>
     </div>
     Du har valgt: <span style="float:right"><strong>{{currentlySelected}}</strong></span>
-    <div id="categories_button"  ng-click="categories_slide('categories_button')"><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></div>
+    <div id="categories_button"  ng-click="categories_slide('categories_button')"><span class="glyphicon" ng-class="{true: 'glyphicon-triangle-left', false: 'glyphicon-triangle-right'}[categoryActive]" aria-hidden="true"></span></div>
 </div>
 
-<div id="gmaps_panel" ng-class="{false: 'slide_gmaps_active', true: 'slide_gmaps_inactive'}[gmapsActive]" class="slide_gmaps_active category_container">
+<div id="gmaps_panel" ng-class="{false: 'slide_gmaps_inactive', true: 'slide_gmaps_active'}[gmapsActive]" class="slide_gmaps_active category_container">
     <legend style="color: white;">Filtre </legend>
     <input id="searchField" class="controls form-control" type="text" placeholder="Search locations" style="margin-bottom:1em">
     <div style="height:60px;">
@@ -71,7 +71,7 @@
 -->
     <button type="button" class="btn" style="background: #ED7A43; color: white" ng-click="resetFilter()">Nullstill</button>
 
-    <div id="gmaps_panel_button"  ng-click="gmaps_slide('gmaps_panel_button')"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></div>
+    <div id="gmaps_panel_button"  ng-click="gmaps_slide('gmaps_panel_button')"><span class="glyphicon" ng-class="{true: 'glyphicon-triangle-right', false: 'glyphicon-triangle-left'}[gmapsActive]" aria-hidden="true"></span></div>
 
 </div>
 
