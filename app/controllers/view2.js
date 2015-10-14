@@ -1,4 +1,5 @@
-app.controller('view2', function($scope) {
+app.controller('view2', function($scope, $modal, $log) {
+
     $scope.categories_slide = function(){
         $scope.categoryActive = !$scope.categoryActive;
     }
@@ -13,9 +14,16 @@ app.controller('view2', function($scope) {
         disableDefaultUI: true
     });
 
+    $scope.isChecked = function(itemId) {
+        if($scope.currentlySelected == "Heatmap " + itemId) {
+            return 'glyphicon glyphicon-ok-sign';
+        }return false;
+    }
+
     $scope.selectedHeatmap = function(itemId) {
         if($scope.currentlySelected == "Heatmap " + itemId) {
             $scope.currentlySelected = "";
+            document.getElementById(itemId+"Glyph").class = "";
             toggleHeatmap();
         }
         else {
@@ -65,10 +73,15 @@ app.controller('view2', function($scope) {
 
     $scope.pointRadius = 20;
 
+    $scope.fromDate = "";
+    $scope.toDate = "";
+
     $scope.fromTime = "00:00";
     $scope.toTime = "23:59";
 
     $scope.currentlySelected = "";
+
+    var activeJSONData;
     var data = getFaultPoints();
     var path = getPath();
     pathArray = new google.maps.MVCArray(path);
@@ -95,11 +108,13 @@ app.controller('view2', function($scope) {
 
 
     function getPoints(dummyData) {
-        dataPoints = []
+        dataPoints = [];
+        activeJSONData = [];
         var i = 0;
         angular.forEach(dummyData, function(data){
             if(inInterval(dateComparify(data.Date), data.Time.replace(/:/g, ''))) {
                 dataPoints[i] = new google.maps.LatLng(data.Latitude, data.Longitude);
+                activeJSONData[i] = data;
                 i++;
             }
         })
@@ -129,7 +144,7 @@ app.controller('view2', function($scope) {
     }
 
     $scope.testChange = function() {
-        pointArray = getPoints();
+        pointArray = getPoints(loadDummyData());
         heatmap.setData(pointArray);
     }
 
@@ -140,15 +155,19 @@ app.controller('view2', function($scope) {
      * @returns {boolean}
      */
     function inInterval(date, time) {
-        var fromDate = document.getElementById('fromDate').value.replace(/-/g,'');
-        var toDate = document.getElementById('toDate').value.replace(/-/g,'');
+        fromDate = document.getElementById('fromDate').value.replace(/-/g,'');
+        toDate = document.getElementById('toDate').value.replace(/-/g,'');
+
         if(!timeInterval(time))
             return false;
 
+
         if(fromDate == "" && toDate == "")
             return true;
-        else if(fromDate == "")
+        else if(fromDate == "") {
+            console.log(date + "  ?  " + toDate);
             return date <= toDate;
+        }
         else if (toDate == "")
             return date >= fromDate;
         else
@@ -261,7 +280,84 @@ app.controller('view2', function($scope) {
         document.getElementById("toDate").value = "";
         document.getElementById("fromTime").value = "";
         document.getElementById("toTime").value = "";
+        testChange();
     }
+
+    $scope.selectedCluster = [];
+    $scope.enableTooltip = false;
+    var clickedPoint;
+    var selectedArea;
+    google.maps.event.addListener(map, 'click', function(event) {
+        if(selectedArea != null)
+            selectedArea.setMap(null);
+        if($scope.enableTooltip) {
+            clickedPoint = event.latLng;
+            $scope.selectedCluster = proximity();
+
+        if ( $scope.selectedCluster.length > 0 ) {
+            console.log("HUEHUE")
+            selectedArea = new google.maps.Circle({
+                strokeColor: '#0008FF',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#0008FF',
+                fillOpacity: 0.2,
+                map: map,
+                center: clickedPoint,
+                radius: 50
+            });
+
+            $scope.openModal($scope.selectedCluster);
+
+        }
+        }
+    });
+
+
+    var proximity = function() {
+        cluster = [];
+        var i = 0;
+            angular.forEach(activeJSONData, function (data) {
+                point = new google.maps.LatLng(data.Latitude, data.Longitude);
+                if (pointInCircle(point, 50, clickedPoint)) {
+                    console.log(data);
+                    cluster[i] = data;
+                    i++;
+                }
+            });
+        console.log(cluster);
+        return cluster;
+    }
+
+
+
+    function pointInCircle(point, radius, center)
+        {
+       // console.log("Point: " + point + "   radius " + radius + "     Center: " + center);
+        return (google.maps.geometry.spherical.computeDistanceBetween(point, center) <= radius)
+    }
+
+
+    $scope.openModal = function(obj) {
+        var modalInstance = $modal.open({
+            templateUrl: 'views/infoWindowContent.html',
+            controller: 'roadFaults',
+            size: 'lg',
+            resolve: {
+                obj: function () {
+                    return obj;
+                }
+            }
+        });
+        modalInstance.result.then(function (status) {
+            console.log(status);
+        }, function () {
+            selectedArea.setMap(null);
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    }
+
+
 
     var loadDummyData = function() {
         return [{"Id":1,"Latitude":63.43156118,"Longitude":10.39528644,"Date":"01/09/2015","Time":"10:04:34"},

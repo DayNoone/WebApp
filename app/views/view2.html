@@ -12,8 +12,11 @@
             </div>
             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                 <div class="panel-body">
+                    <span data-ng-class="isChecked('speedVar')" aria-hidden="true" style="color:black;"></span>
                     <a id="speedVar" class="category_element" ng-click="selectedHeatmap('speedVar')">Fartsendring</a> <br>
+                    <span data-ng-class="isChecked('popularity')" aria-hidden="true" style="color:black;"></span>
                     <a id="popularity" class="category_element" ng-click="selectedHeatmap('popularity')">Popularitet</a><br>
+                    <span data-ng-class="isChecked('Veifeil')" aria-hidden="true" style="color:black;"></span>
                     <a id="Veifeil" class="category_element" ng-click="selectedHeatmap('Veifeil')">Veifeil</a><br>
                 </div>
             </div>
@@ -42,21 +45,21 @@
     <input id="searchField" class="controls form-control" type="text" placeholder="Search locations" style="margin-bottom:1em">
     <div style="height:60px;">
         <div class="input-group">
-            <span class="input-group-addon">Fra: </span><input class="form-control" type="date" id="fromDate" ng-change="testChange()" ng-model="TEST1"/>
+            <span class="input-group-addon">Fra: </span><input class="form-control" type="date" id="fromDate" ng-change="testChange()" ng-model="fromDate"/>
         </div>
     </div>
 
     <div style="height:60px; margin-bottom: 1em">
         <div class="input-group">
-            <span class="input-group-addon">Til: </span><input class="form-control" type="date" id="toDate" ng-change="testChange()" ng-model="TEST2"/>
+            <span class="input-group-addon">Til: </span><input class="form-control" type="date" id="toDate" ng-change="testChange()" ng-model="toDate"/>
         </div>
     </div>
 
     <div style="height:60px; margin-bottom: 1em">
         <div class="input-group">
             <span class="input-group-addon">Tidsrom: </span>
-            <input class="form-control" type="time" id="fromTime" value="00:00"ng-model="fromTime" ng-change="testChange()"/>
-            <input class="form-control" type="time" id="toTime" ng-model="toTime" value="23:59" ng-change="testChange()"/>
+            <input class="form-control" type="time" id="fromTime" ng-model="fromTime" ng-change="testChange()"/>
+            <input class="form-control" type="time" id="toTime" ng-model="toTime" ng-change="testChange()"/>
                 </div>
         </div>
 
@@ -71,9 +74,15 @@
 -->
     <button type="button" class="btn" style="background: #ED7A43; color: white" ng-click="resetFilter()">Nullstill</button>
 
+    <button type="button" class="btn btn-primary" data-toggle="button" ng-click="enableTooltip = !enableTooltip">
+        Klikkbare punkter
+    </button>
+
     <div id="gmaps_panel_button"  ng-click="gmaps_slide('gmaps_panel_button')"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></div>
 
 </div>
+
+
 
 <div id="map"></div>
 
