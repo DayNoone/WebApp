@@ -10,6 +10,7 @@ html, body {
   padding: 0;
   background-color: #EAEAEA;
   overflow-x: hidden;
+  font-family: 'Open Sans', sans-serif !important;
 }
 #view {
   height: 93%;
@@ -132,7 +133,21 @@ html, body {
 #navbar {
   overflow: hidden;
   margin-left: 15%;
+  margin-right: 15%;
   height: 7%;
+}
+#navbar span {
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+#navbar a {
+  line-height: 38px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+#navbar a:hover {
+  color: #EC8351;
 }
 
 .category_element {
