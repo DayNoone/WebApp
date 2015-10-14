@@ -30,10 +30,21 @@ html, body {
   background-color: #5178A0;
   color: white;
   z-index: 1;
+  opacity: 0.90;
+}
+#categories {
   -moz-box-shadow:    10px 0 20px -10px rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 10px 0 20px -10px rgba(0, 0, 0, 0.3);
   box-shadow:         10px 0 20px -10px rgba(0, 0, 0, 0.3);
-  opacity: 0.90;
+}
+#gmaps_panel {
+  -moz-box-shadow:    -10px 0 20px -10px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: -10px 0 20px -10px rgba(0, 0, 0, 0.3);
+  box-shadow:         -10px 0 20px -10px rgba(0, 0, 0, 0.3);
+}
+.category_container legend {
+  color: white;
+  font-weight: 200;
 }
 
 /*Categories slider */
@@ -109,7 +120,8 @@ html, body {
   -moz-box-shadow:    10px 0 20px -10px rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 10px 0 20px -10px rgba(0, 0, 0, 0.3);
   box-shadow:         10px 0 20px -10px rgba(0, 0, 0, 0.3);
-  line-height: 20px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 #gmaps_panel_button{
@@ -117,11 +129,13 @@ html, body {
   -moz-box-shadow:    -10px 0 20px -10px rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: -10px 0 20px -10px rgba(0, 0, 0, 0.3);
   box-shadow:         -10px 0 20px -10px rgba(0, 0, 0, 0.3);
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 #categories_button, #gmaps_panel_button {
   position: absolute;
   top: 50%;
-  width: 20px;
+  width: 25px;
   height: 60px;
   background-color: #5178A0;
   z-index: 2;
