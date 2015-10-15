@@ -15,6 +15,11 @@ app.controller('view2', function($scope, $modal, $log) {
         disableDefaultUI: true
     });
 
+    /**
+     * Checks if current element is active or not
+     * @param itemId, id of the link
+     * @returns {*} if checked, return icon, else, icon gets removed
+     */
     $scope.isChecked = function(itemId) {
         if($scope.currentlySelected == "Heatmap " + itemId) {
             return 'glyphicon glyphicon-ok-sign';
