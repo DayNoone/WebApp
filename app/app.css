@@ -143,6 +143,7 @@ html, body {
 #categories_button, #gmaps_panel_button span {
   font-size: 20px;
   line-height: 3;
+  cursor: pointer;
 }
 #navbar {
   overflow: hidden;
@@ -168,7 +169,6 @@ html, body {
 }
 .vertical_centering {
   position: relative;
-  top: 25%;
 }
 .category_element {
   cursor:pointer;
