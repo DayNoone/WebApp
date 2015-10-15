@@ -1,0 +1,29 @@
+<div style="margin: 2em">
+    <legend>Veifeil</legend>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th class="tableHeader">Id
+                <th class="tableHeader">Breddegrad
+                <th class="tableHeader">Lengdegrad
+                <th class="tableHeader">Dato
+                <th class="tableHeader">Tidspunkt
+                <th class="tableHeader">Bilde
+                <th class="tableHeader">Beskrivelse
+                </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat = "data in selectedCluster" class="ng-scope tableSelection" data-ng-click="">
+            <td class ="ng-binding">{{data.Id}}</td>
+            <td class ="ng-binding">{{data.Longitude}}</td>
+            <td class ="ng-binding">{{data.Latitude}}</td>
+            <td class ="ng-binding">{{data.Date}}</td>
+            <td class ="ng-binding">{{data.Time}}</td>
+            <td class ="ng-binding">---</td>
+            <td class ="ng-binding">---</td>
+            </tr>
+        </tbody></table>
+
+    </div>

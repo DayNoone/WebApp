@@ -177,3 +177,23 @@ html, body {
   border-width: 1px;
   border-style:solid;
 }
+
+.tableSelection:nth-child(odd) {
+  background-color: #F9F9F9;
+}
+
+.tableSelection:hover td{
+  background-color:#326ca6;
+  color:white;
+  cursor:pointer;
+}
+
+.tableHeader:hover {
+  cursor:pointer;
+  background-color: lightgray;
+}
+
+.tableHeader:active {
+  cursor:pointer;
+  background-color: lightslategray;
+}
