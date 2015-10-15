@@ -156,14 +156,20 @@ html, body {
   letter-spacing: 2px;
 }
 #navbar a {
-  line-height: 38px;
+  height:100%;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 #navbar a:hover {
   color: #EC8351;
 }
-
+.navbar-nav, .navbar-nav li, .navbar-header {
+  height: 100%;
+}
+.vertical_centering {
+  position: relative;
+  top: 25%;
+}
 .category_element {
   cursor:pointer;
 }
