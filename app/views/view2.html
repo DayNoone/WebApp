@@ -60,8 +60,14 @@
             <span class="input-group-addon">Tidsrom: </span>
             <input class="form-control" type="time" id="fromTime" ng-model="fromTime" ng-change="testChange()"/>
             <input class="form-control" type="time" id="toTime" ng-model="toTime" ng-change="testChange()"/>
-                </div>
         </div>
+    </div>
+
+    <div style="height:60px; margin-bottom: 1em">
+        <div class="input-group">
+            <span class="input-group-addon">Klikkradius </span><input class="form-control" type="range" value = "50" max = "1000" min = "5" ng-model="clickRadius">
+        </div>
+    </div>
 
     <!--
     <div style="height:60px; margin-bottom: 1em">
