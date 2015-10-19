@@ -8,12 +8,26 @@ app.controller('view2', function($scope, $modal, $log) {
         $scope.gmapsActive = !$scope.gmapsActive;
     }
 
-    var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 14,
-        center: new google.maps.LatLng(63.4174652, 10.4043239),
-        mapTypeId: google.maps.MapTypeId.TERRAIN,
-        disableDefaultUI: true
-    });
+    var map;
+    init = function() {
+        console.log("Init");
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 14,
+            center: new google.maps.LatLng(63.4174652, 10.4043239),
+            mapTypeId: google.maps.MapTypeId.TERRAIN,
+            disableDefaultUI: true
+        });
+        //data = getFaultPoints();
+        //path = getPath();
+        searchBox = new google.maps.places.SearchBox(input);
+        map.addListener('bounds_changed', function() {
+            searchBox.setBounds(map.getBounds());
+        });
+        addSearchBoxListener();
+        addClickListener();
+        initHeatMap();
+        console.log("Google Maps and its APIs has been loaded");
+    }
 
     /**
      * Checks if current element is active or not
@@ -89,21 +103,39 @@ app.controller('view2', function($scope, $modal, $log) {
     $scope.currentlySelected = "";
 
     var activeJSONData;
-    var data = getFaultPoints();
-    var path = getPath();
-    pathArray = new google.maps.MVCArray(path);
+    var data;
+    var path;
+    var heatmap;
+    //pathArray  = new google.maps.MVCArray(path);;
+    var pointArray;
+    var initHeatMap = function() {
+        pointArray = new google.maps.MVCArray(data);
+        try {
+            heatmap = new google.maps.visualization.HeatmapLayer({
+                data: pointArray,
+                map: map
+            });
+        }catch(e) {
+            console.log(e);
+            if (!heatmap) {
+                console.log("Heatmap is undefined after creation, error with map: map")
+            }
+        }
+        heatmap.set('radius', heatmap.get('radius') ? null : $scope.pointRadius);
+        toggleHeatmap();
+    }
 
-    pointArray = new google.maps.MVCArray(data);
-    var heatmap = new google.maps.visualization.HeatmapLayer({
-        data: pointArray,
-        map: map
-    });
-    toggleHeatmap();
-    heatmap.set('radius', heatmap.get('radius') ? null : $scope.pointRadius);
+
+
     function toggleHeatmap() {
+        if(!heatmap)
+           alert("heatmap is undefined");
         heatmap.setMap(heatmap.getMap() ? null : map);
     }
 
+//************============================================******************
+
+/*
     var tripPath = new google.maps.Polyline({
         path: pathArray,
         geodesic: true,
@@ -112,7 +144,7 @@ app.controller('view2', function($scope, $modal, $log) {
         strokeWeight: 2
     });
 
-
+*/
 
     function getPoints(dummyData) {
         dataPoints = [];
@@ -221,58 +253,57 @@ app.controller('view2', function($scope, $modal, $log) {
     /* Google Maps Search Code, Gotten from Google Developers */
     // Create the search box and link it to the UI element.
     var input = document.getElementById('searchField');
-    var searchBox = new google.maps.places.SearchBox(input);
+    var searchBox;
    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
     // Bias the SearchBox results towards current map's viewport.
-    map.addListener('bounds_changed', function() {
-        searchBox.setBounds(map.getBounds());
-    });
 
     var markers = [];
     // Listen for the event fired when the user selects a prediction and retrieve
     // more details for that place.
-    searchBox.addListener('places_changed', function() {
-        var places = searchBox.getPlaces();
+    var addSearchBoxListener = function() {
+        searchBox.addListener('places_changed', function () {
+            var places = searchBox.getPlaces();
 
-        if (places.length == 0) {
-            return;
-        }
-
-        // Clear out the old markers.
-        markers.forEach(function(marker) {
-            marker.setMap(null);
-        });
-        markers = [];
-
-        // For each place, get the icon, name and location.
-        var bounds = new google.maps.LatLngBounds();
-        places.forEach(function(place) {
-            var icon = {
-                url: place.icon,
-                size: new google.maps.Size(71, 71),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(17, 34),
-                scaledSize: new google.maps.Size(25, 25)
-            };
-
-            // Create a marker for each place.
-            markers.push(new google.maps.Marker({
-                map: map,
-                icon: icon,
-                title: place.name,
-                position: place.geometry.location
-            }));
-
-            if (place.geometry.viewport) {
-                // Only geocodes have viewport.
-                bounds.union(place.geometry.viewport);
-            } else {
-                bounds.extend(place.geometry.location);
+            if (places.length == 0) {
+                return;
             }
+
+            // Clear out the old markers.
+            markers.forEach(function (marker) {
+                marker.setMap(null);
+            });
+            markers = [];
+
+            // For each place, get the icon, name and location.
+            var bounds = new google.maps.LatLngBounds();
+            places.forEach(function (place) {
+                var icon = {
+                    url: place.icon,
+                    size: new google.maps.Size(71, 71),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(17, 34),
+                    scaledSize: new google.maps.Size(25, 25)
+                };
+
+                // Create a marker for each place.
+                markers.push(new google.maps.Marker({
+                    map: map,
+                    icon: icon,
+                    title: place.name,
+                    position: place.geometry.location
+                }));
+
+                if (place.geometry.viewport) {
+                    // Only geocodes have viewport.
+                    bounds.union(place.geometry.viewport);
+                } else {
+                    bounds.extend(place.geometry.location);
+                }
+            });
+            map.fitBounds(bounds);
         });
-        map.fitBounds(bounds);
-    });
+    }
     // END OF GOOGLE DEVELOPER CODE
 
     $scope.changePointRadius = function() {
@@ -292,31 +323,34 @@ app.controller('view2', function($scope, $modal, $log) {
     $scope.enableTooltip = false;
     var clickedPoint;
     var selectedArea;
-    google.maps.event.addListener(map, 'click', function(event) {
-        if(selectedArea != null)
-            selectedArea.setMap(null);
-        if($scope.enableTooltip) {
-            clickedPoint = event.latLng;
-            $scope.selectedCluster = proximity();
 
-        if ( $scope.selectedCluster.length > 0 ) {
-            console.log("HUEHUE", $scope.clickRadius)
-            selectedArea = new google.maps.Circle({
-                strokeColor: '#0008FF',
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: '#0008FF',
-                fillOpacity: 0.2,
-                map: map,
-                center: clickedPoint,
-                radius: parseInt($scope.clickRadius)
-            });
+    var addClickListener = function() {
+        google.maps.event.addListener(map, 'click', function (event) {
+            if (selectedArea != null)
+                selectedArea.setMap(null);
+            if ($scope.enableTooltip) {
+                clickedPoint = event.latLng;
+                $scope.selectedCluster = proximity();
 
-            $scope.openModal($scope.selectedCluster);
+                if ($scope.selectedCluster.length > 0) {
+                    console.log("HUEHUE", $scope.clickRadius)
+                    selectedArea = new google.maps.Circle({
+                        strokeColor: '#0008FF',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        fillColor: '#0008FF',
+                        fillOpacity: 0.2,
+                        map: map,
+                        center: clickedPoint,
+                        radius: parseInt($scope.clickRadius)
+                    });
 
-        }
-        }
-    });
+                    $scope.openModal($scope.selectedCluster);
+
+                }
+            }
+        });
+    }
 
 
     var proximity = function() {
