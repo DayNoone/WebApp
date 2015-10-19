@@ -324,7 +324,7 @@ app.controller('view2', function($scope, $modal, $log) {
         var i = 0;
             angular.forEach(activeJSONData, function (data) {
                 point = new google.maps.LatLng(data.Latitude, data.Longitude);
-                if (pointInCircle(point, 50, clickedPoint)) {
+                if (pointInCircle(point, $scope.clickRadius, clickedPoint)) {
                     console.log(data);
                     cluster[i] = data;
                     i++;
