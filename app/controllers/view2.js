@@ -26,6 +26,7 @@ app.controller('view2', function($scope, $modal, $log) {
         addSearchBoxListener();
         addClickListener();
         initHeatMap();
+        initTripPath();
         console.log("Google Maps and its APIs has been loaded");
     }
 
@@ -106,7 +107,7 @@ app.controller('view2', function($scope, $modal, $log) {
     var data;
     var path;
     var heatmap;
-    //pathArray  = new google.maps.MVCArray(path);;
+    var pathArray;
     var pointArray;
     var initHeatMap = function() {
         pointArray = new google.maps.MVCArray(data);
@@ -135,16 +136,17 @@ app.controller('view2', function($scope, $modal, $log) {
 
 //************============================================******************
 
-/*
-    var tripPath = new google.maps.Polyline({
-        path: pathArray,
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 2
-    });
 
-*/
+    initTripPath = function(){
+        tripPath = new google.maps.MVCArray(path);
+        var tripPath = new google.maps.Polyline({
+            path: pathArray,
+            geodesic: true,
+            strokeColor: '#FF0000',
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+        });
+    }
 
     function getPoints(dummyData) {
         dataPoints = [];
