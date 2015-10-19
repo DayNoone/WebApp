@@ -72,6 +72,7 @@ app.controller('view2', function($scope, $modal, $log) {
 
 
     $scope.pointRadius = 20;
+    $scope.clickRadius = 50;
 
     $scope.fromDate = "";
     $scope.toDate = "";
@@ -295,7 +296,7 @@ app.controller('view2', function($scope, $modal, $log) {
             $scope.selectedCluster = proximity();
 
         if ( $scope.selectedCluster.length > 0 ) {
-            console.log("HUEHUE")
+            console.log("HUEHUE", $scope.clickRadius)
             selectedArea = new google.maps.Circle({
                 strokeColor: '#0008FF',
                 strokeOpacity: 0.8,
@@ -304,7 +305,7 @@ app.controller('view2', function($scope, $modal, $log) {
                 fillOpacity: 0.2,
                 map: map,
                 center: clickedPoint,
-                radius: 50
+                radius: parseInt($scope.clickRadius)
             });
 
             $scope.openModal($scope.selectedCluster);
