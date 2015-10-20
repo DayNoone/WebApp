@@ -1,4 +1,4 @@
-app.controller('view2', function($scope, $modal, $log) {
+app.controller('view2', function($scope, $modal, $log, $http) {
     $scope.categoryActive = true
     $scope.categories_slide = function(){
         $scope.categoryActive = !$scope.categoryActive;
@@ -29,6 +29,7 @@ app.controller('view2', function($scope, $modal, $log) {
         initTripPath();
         console.log("Google Maps and its APIs has been loaded");
     }
+    connect();
 
     /**
      * Checks if current element is active or not
@@ -401,7 +402,33 @@ app.controller('view2', function($scope, $modal, $log) {
         });
     }
 
+    function connect() {
+        var server_url = "https://tf2.sintef.no:8084/smioTest/api/";
 
+        var username = "sondre";
+        var password = "dabchick402";
+        var userid = "560946d9b2af57c413ac8427";
+        var token = "$2a$10$w1BPdOBqiuaYiKJ6a2qYdewOKOdk7fQ.LE3yjf6fvF5/YLtBi2Q8S";
+        $http.get(server_url + 'trips', {params: {uid: $scope.uid, token: $scope.token}}).
+            success(function(data){
+                console.log('Loaded');
+                //trips = "Loaded" + data[0];
+
+              /*  $scope.trips = [];
+                for(var i = 0; i < data.length; i++) {
+                    $scope.calculateTrip(data[i]);
+                    if(data[i].length > 10)
+                        $scope.trips.push(data[i]);
+                }*/
+
+                //dialog.close();
+            }).
+            error(function(){
+                //dialog.close();
+                console.log('Failed');
+                //trips = "Failed to load questions!";
+            });
+    }
 
     var loadDummyData = function() {
         return [{"Id":1,"Latitude":63.43156118,"Longitude":10.39528644,"Date":"01/09/2015","Time":"10:04:34"},
