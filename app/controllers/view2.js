@@ -25,6 +25,7 @@ app.controller('view2', function($scope, $modal, $log) {
         });
         addSearchBoxListener();
         addClickListener();
+        //addHoverListener();
         initHeatMap();
         initTripPath();
         console.log("Google Maps and its APIs has been loaded");
@@ -127,7 +128,25 @@ app.controller('view2', function($scope, $modal, $log) {
     }
 
     function addHoverListener() {
-
+        google.maps.event.addListener(map, 'mousemove', function (event) {
+            if (selectedArea != null) {
+                selectedArea.setMap(null);
+            }
+            if($scope.enableTooltip){
+                console.log("WWWWW")
+                selectedArea = new google.maps.Circle({
+                    strokeColor: '#0008FF',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#0008FF',
+                    fillOpacity: 0.2,
+                    map: map,
+                    center: event.latLng,
+                    radius: parseInt($scope.clickRadius)
+                });
+                console.log()
+            }
+        });
     }
 
     function toggleHeatmap() {
