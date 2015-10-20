@@ -44,7 +44,6 @@ app.controller('view2', function($scope, $modal, $log) {
     $scope.selectedHeatmap = function(itemId) {
         if($scope.currentlySelected == "Heatmap " + itemId) {
             $scope.currentlySelected = "";
-            document.getElementById(itemId+"Glyph").class = "";
             toggleHeatmap();
         }
         else {
@@ -67,6 +66,7 @@ app.controller('view2', function($scope, $modal, $log) {
             }
             heatmap.setData(data);
         }
+        console.log($scope.currentlySelected);
     }
 
     $scope.selectedLines = function(itemId) {
@@ -116,29 +116,32 @@ app.controller('view2', function($scope, $modal, $log) {
                 data: pointArray,
                 map: map
             });
+            heatmap.set('radius', heatmap.get('radius') ? null : $scope.pointRadius);
+            toggleHeatmap();
         }catch(e) {
             console.log(e);
             if (!heatmap) {
                 console.log("Heatmap is undefined after creation, error with map: map")
             }
         }
-        heatmap.set('radius', heatmap.get('radius') ? null : $scope.pointRadius);
-        toggleHeatmap();
     }
 
+    function addHoverListener() {
 
+    }
 
     function toggleHeatmap() {
         if(!heatmap)
-           alert("heatmap is undefined");
-        heatmap.setMap(heatmap.getMap() ? null : map);
+           alert("Error with heatmap, try refreshing the page");
+        else
+            heatmap.setMap(heatmap.getMap() ? null : map);
     }
 
 //************============================================******************
 
 
-    initTripPath = function(){
-        tripPath = new google.maps.MVCArray(path);
+    function initTripPath(){
+        pathArray = new google.maps.MVCArray(path);
         var tripPath = new google.maps.Polyline({
             path: pathArray,
             geodesic: true,
