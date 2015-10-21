@@ -405,46 +405,42 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     function connect() {
         var service_URL = "https://tf2.sintef.no:8084/smioTest/api/";
 
-        var uid = "erlend.dahl@gmail.com";
-        var pw = "wapiti884";
-        var userid = "560946d9b2af57c413ac8427";
-        var token = "$2a$10$w1BPdOBqiuaYiKJ6a2qYdewOKOdk7fQ.LE3yjf6fvF5/YLtBi2Q8S";
-        /*$http({
+        //var uid = "erlend.dahl@gmail.com";
+        //var pw = "wapiti884";
+        var uid = "sondre";
+        var pw = "dabchick402";
+        //var userid = "560946d9b2af57c413ac8427";
+        //var token = "$2a$10$w1BPdOBqiuaYiKJ6a2qYdewOKOdk7fQ.LE3yjf6fvF5/YLtBi2Q8S";
+        $http({
             method : 'POST',
-            data : {username: uid, pasword:pw, isAdmin: true},
+            data : {username: uid, password:pw},
             url : service_URL})
             .success(function(data) {
                 console.log("Success");
+                console.log(data);
+                userid = data['_id']
+                token = data['token']
+                $http.get(service_URL + 'trips', {params: {uid: userid, token: token}}).
+                    success(function(data){
+                        console.log('Loaded');
+                        console.log(data)
+                    }).
+                    error(function(){
+                        console.log('GET trips failed');
+                    });
+                    $http.get(service_URL + 'errors', {params: {uid: userid, token: token}}).
+                        success(function(data){
+                            console.log('Loaded');
+                            console.log(data)
+                        }).
+                        error(function(){
+                            console.log('GET error failed');
+                        });
             }).error(function(){
-                console.log("Failed");
-        });*/
-       /* $http.post(service_URL, {params: {username: uid, password: pw, isAdmin: true}}).
-         success(function(data){
-            console.log('Loaded');
-         }).
-         error(function(){
-            console.log('Failed');
-         });*/
+                console.log("POST failed");
+        });
 
-        $http.get(service_URL + 'trips', {params: {uid: userid, token: token}}).
-            success(function(data){
-                console.log('Loaded');
-                //trips = "Loaded" + data[0];
 
-              /*  $scope.trips = [];
-                for(var i = 0; i < data.length; i++) {
-                    $scope.calculateTrip(data[i]);
-                    if(data[i].length > 10)
-                        $scope.trips.push(data[i]);
-                }*/
-
-                //dialog.close();
-            }).
-            error(function(){
-                //dialog.close();
-                console.log('Failed');
-                //trips = "Failed to load questions!";
-            });
     }
 
     var loadDummyData = function() {
