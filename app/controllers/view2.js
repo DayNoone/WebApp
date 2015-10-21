@@ -32,7 +32,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
 
     }
 
-    connect();
+    //connect();
     function connect() {/*
 
 

@@ -1,4 +1,4 @@
-<div style="margin: 2em">
+<div style="margin: 2em" ng-hide="lineClicked" ng-animate="'slide'">
     <legend>Veifeil</legend>
 
     <table class="table table-bordered">
@@ -14,8 +14,8 @@
                 </tr>
         </thead>
 
-        <tbody>
-        <tr ng-repeat = "data in selectedCluster" class="ng-scope tableSelection" data-ng-click="">
+        <tbody ng-click="lineClicked = !lineClicked">
+        <tr ng-repeat = "data in selectedCluster" class="ng-scope tableSelection">
             <td class ="ng-binding">{{data.Id}}</td>
             <td class ="ng-binding">{{data.Longitude}}</td>
             <td class ="ng-binding">{{data.Latitude}}</td>
@@ -24,6 +24,10 @@
             <td class ="ng-binding">---</td>
             <td class ="ng-binding">---</td>
             </tr>
-        </tbody></table>
+        </tbody>
+    </table>
 
-    </div>
+</div>
+
+<div id="errorDescription" ng-show="lineClicked" ng-click="lineClicked = !lineClicked" ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}">
+</div>
