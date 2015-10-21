@@ -44,7 +44,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         $http({
             method : 'GET',
             data : {uid: uid, token:pw},
-            url : service_URL})
+            url : service_URL + 'trips'})
                 .success(function(data) {
             console.log("Success");
         }).error(function(){
@@ -142,7 +142,8 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             heatmap.set('radius', heatmap.get('radius') ? null : $scope.pointRadius);
             toggleHeatmap();
         }catch(e) {
-            console.log(e);
+            location.reload();
+            //console.log(e);
             if (!heatmap) {
                 console.log("Heatmap is undefined after creation, error with map: map")
             }

@@ -212,3 +212,22 @@ html, body {
 .animate-enter.animate-enter-active {
   opacity: 1;
 }
+#errorDescription {
+  margin: auto;
+  width:300px;
+}
+
+.form-left{
+  background: lightgray;
+  border: solid;
+  border-width: 1px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-right: none;
+  maring-bottom: 20px;
+  height: 1em;
+  padding: 5px;
+}
+.form-right {
+
+}

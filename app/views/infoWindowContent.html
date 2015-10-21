@@ -30,4 +30,27 @@
 </div>
 
 <div id="errorDescription" ng-show="lineClicked" ng-click="lineClicked = !lineClicked" ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}">
+    <div class="col-md-12">
+        <img ng-src="{{dataClicked.image}}" class="center-block"> <br>
+    </div>
+
+    <legend>Beskrivelse</legend>
+    <p>{{dataClicked.description}}</p>
+
+    <div class="row" style="line-height: 25px; margin-bottom: 40px">
+        <div class="col-md-4">
+            <span class="label label-default">BrukerID </span> <br>
+            <span class="label label-default">Tidsmerke </span> <br>
+            <span class="label label-default">Breddegrad: </span> <br>
+            <span class="label label-default">Lengdegrad: </span>
+        </div>
+        <div class="col-md-8">
+            <span>{{dataClicked.userId}}</span> <br>
+            <span>{{dataClicked.timestamp}}</span> <br>
+            <span>{{dataClicked.lat}}</span> <br>
+            <span>{{dataClicked.lon}}</span>
+        </div>
+    </div>
+
+
 </div>
