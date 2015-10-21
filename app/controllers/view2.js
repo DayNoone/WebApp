@@ -403,23 +403,33 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     }
 
     function connect() {
-        var server_url = "https://tf2.sintef.no:8084/smioTest/api/";
+        var service_URL = "https://tf2.sintef.no:8084/smioTest/api/";
 
-        var username = "sondre";
-        var password = "dabchick402";
+        var uid = "sondre";
+        var pw = "dabchick402";
         var userid = "560946d9b2af57c413ac8427";
         var token = "$2a$10$w1BPdOBqiuaYiKJ6a2qYdewOKOdk7fQ.LE3yjf6fvF5/YLtBi2Q8S";
-        $http.get(server_url + 'trips', {params: {uid: $scope.uid, token: $scope.token}}).
+        $http({
+            method : 'GET',
+            data : {uid: uid, token:pw},
+            url : service_URL})
+            .success(function(data) {
+                console.log("Success");
+            }).error(function(){
+                console.log("Failed");
+            });
+
+        /*$http.get(server_url + 'trips', {params: {uid: $scope.uid, token: $scope.token}}).
             success(function(data){
                 console.log('Loaded');
                 //trips = "Loaded" + data[0];
 
-              /*  $scope.trips = [];
+              /!*  $scope.trips = [];
                 for(var i = 0; i < data.length; i++) {
                     $scope.calculateTrip(data[i]);
                     if(data[i].length > 10)
                         $scope.trips.push(data[i]);
-                }*/
+                }*!/
 
                 //dialog.close();
             }).
@@ -427,7 +437,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
                 //dialog.close();
                 console.log('Failed');
                 //trips = "Failed to load questions!";
-            });
+            });*/
     }
 
     var loadDummyData = function() {
