@@ -1,4 +1,4 @@
-app.controller('view2', function($scope, $modal, $log) {
+app.controller('view2', function($scope, $modal, $log, $http) {
     $scope.categoryActive = true
     $scope.categories_slide = function(){
         $scope.categoryActive = !$scope.categoryActive;
@@ -29,6 +29,28 @@ app.controller('view2', function($scope, $modal, $log) {
         initHeatMap();
         initTripPath();
         console.log("Google Maps and its APIs has been loaded");
+
+    }
+
+    connect();
+    function connect() {/*
+
+
+        $http.get(service_URL + 'trips', {params: {uid: uid, token: pw}})
+        */
+        var service_URL = "https://tf2.sintef.no:8084/smioTest/api/";
+        var uid = 'kristhus';
+        var pw = 'pigeon790';
+        $http({
+            method : 'GET',
+            data : {uid: uid, token:pw},
+            url : service_URL})
+                .success(function(data) {
+            console.log("Success");
+        }).error(function(){
+            console.log("Failed");
+        });
+
     }
 
     /**
