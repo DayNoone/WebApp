@@ -214,7 +214,8 @@ html, body {
 }
 #errorDescription {
   margin: auto;
-  width:300px;
+  margin-top: 20px;
+  width:95%;
 }
 
 .form-left{
