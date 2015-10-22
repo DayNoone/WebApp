@@ -13,7 +13,7 @@ html, body {
   font-family: 'Open Sans', sans-serif !important;
 }
 #view {
-  height: 93%;
+  height: 96%;
 }
 #map {
   height: 100%;
@@ -25,7 +25,7 @@ html, body {
   padding: 2em;
   float:left;
   width: 15%;
-  height: 93%;
+  height: 96%;
   border-right-style: none;
   background-color: #5178A0;
   color: white;
@@ -149,17 +149,12 @@ html, body {
   overflow: hidden;
   margin-left: 15%;
   margin-right: 15%;
-  height: 7%;
-}
-#navbar span {
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 2px;
 }
 #navbar a {
   height:100%;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  font-weight: 300;
+  letter-spacing: 2px;
 }
 #navbar a:hover {
   color: #EC8351;
