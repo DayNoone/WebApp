@@ -27,15 +27,18 @@
 
 </div>
 
-<div id="errorDescription" ng-show="lineClicked" ng-click="lineClicked = !lineClicked" ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}">
-    <div class="col-md-12">
-        <img src="{{image.src}}" class="center-block"> <br>
-    </div>
+<div id="errorDescription" ng-show="lineClicked" ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}">
+   <div class="row" style="margin-top: 80px">
+       <div class="col-md-6" >
+           <img src="{{image.src}}" class="center-block">
+       </div>
+       <div class="col-md-6">
+           <span><legend>Beskrivelse</legend></span> <br>
+           <span><p>{{error.description}}</p></span>
+       </div>
+   </div>
 
-    <legend>Beskrivelse</legend>
-    <p>{{error.description}}</p>
-
-    <div class="row" style="line-height: 25px; margin-bottom: 40px">
+    <div class="row" style="line-height: 25px; margin-bottom: 40px; margin-top: 40px">
         <div class="col-md-4">
             <span class="label label-default">BrukerID </span> <br>
             <span class="label label-default">Tidsmerke </span> <br>
@@ -46,7 +49,8 @@
             <span>{{error._id}}</span> <br>
             <span>{{error.timestamp}}</span> <br>
             <span>{{error.lat}}</span> <br>
-            <span>{{error.lon}}</span>
+            <span>{{error.lon}}</span> <br>
+            <span><button style="margin-top: 20px" ng-click="lineClicked = !lineClicked" id = "enableTooltip" type="button"  class="btn btn-primary"  ng-click="enableTooltip = !enableTooltip">Tilbake </button></span>
         </div>
     </div>
 

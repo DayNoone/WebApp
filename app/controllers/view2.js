@@ -43,7 +43,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             disableDefaultUI: true
         });
         map.setOptions({styles: mapStyle});
-        //data = getFaultPoints();
+        data = getFaultPoints();
         //path = getPath();
         searchBox = new google.maps.places.SearchBox(input);
         map.addListener('bounds_changed', function() {
@@ -52,7 +52,10 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         addSearchBoxListener();
         addClickListener();
         addHoverListener();
-        initHeatMap();
+        var heatMapInit = initHeatMap();
+        while(!heatMapInit){
+            heatMapInit = initHeatMap();
+        }
         initTripPath();
         console.log("Google Maps and its APIs has been loaded");
 
@@ -182,18 +185,22 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     var pointArray;
     var initHeatMap = function() {
         pointArray = new google.maps.MVCArray(data);
+        console.log("this: " + pointArray + " data: " + data);
         try {
             heatmap = new google.maps.visualization.HeatmapLayer({
                 data: pointArray,
                 map: map
             });
+            console.log("that");
             heatmap.set('radius', heatmap.get('radius') ? null : $scope.pointRadius);
             toggleHeatmap();
+            return true;
         }catch(e) {
-            location.reload();
-            //console.log(e);
+            //location.reload();
+            console.log(e);
             if (!heatmap) {
                 console.log("Heatmap is undefined after creation, error with map: map")
+                return false;
             }
         }
     }
