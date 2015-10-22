@@ -277,11 +277,11 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         activeJSONData = [];
         var i = 0;
         angular.forEach(errors, function(data){
-          //  if(inInterval(dateComparify(data.Date), data.Time.replace(/:/g, ''))) {
+            if(inInterval(dateComparify(data.timestamp), timeComparify(data.timestamp))) {
                 dataPoints[i] = new google.maps.LatLng(data.lat, data.lon);
                 activeJSONData[i] = data;
                 i++;
-           // }
+            }
         })
         console.log(dataPoints.length);
         return dataPoints;
@@ -300,12 +300,19 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         return dataPoints;
     }
 
-    // Convert from dd/mm/yyyy to yyyymmdd
+    // Convert from yyyy-MM-dd to yyyymmdd - 2015-10-21T05:15:47.000Z - yyyy-MM-ddThh:mm:ss
     function dateComparify(date) {
-        var in1 = date.substring(6,10);
-        var in2 = date.substring(3,5);
-        var in3 = date.substring(0,2);
-        return in1+in2+in3;
+        var year = date.substring(0,4);
+        var month = date.substring(5,7);
+        var day = date.substring(8,10);
+        return year + "" + month + "" + day;
+    }
+
+
+    function timeComparify(date) {
+        var hours = date.substring(11,13);
+        var minutes = date.substring(14,16);
+        return hours + "" + minutes;
     }
 
     $scope.testChange = function() {
@@ -321,11 +328,11 @@ app.controller('view2', function($scope, $modal, $log, $http) {
      */
     function inInterval(date, time) {
         fromDate = document.getElementById('fromDate').value.replace(/-/g,'');
+        //console.log(fromDate);
         toDate = document.getElementById('toDate').value.replace(/-/g,'');
 
         if(!timeInterval(time))
             return false;
-
 
         if(fromDate == "" && toDate == "")
             return true;
@@ -335,6 +342,8 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             return date >= fromDate;
         else
             return date >= fromDate && date <= toDate;
+
+
     }
 
     function timeInterval(time) {
