@@ -11,12 +11,38 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     var map;
     init = function() {
         console.log("Init");
+
+        var mapStyle = [
+            /**
+            {
+                stylers: [
+                    { hue: "#00ffe6" },
+                    { saturation: 0 }
+                ]
+            }, */
+            {
+                featureType: "road.arterial",
+                elementType: "geometry",
+                stylers: [
+                    { lightness: 100 },
+                    { visibility: "simplified" }
+                ]
+            },{
+                featureType: "poi",
+                elementType: "Labels",
+                stylers: [
+                    { visibility: "off" }
+                ]
+            }
+        ];
+
         map = new google.maps.Map(document.getElementById('map'), {
             zoom: 14,
             center: new google.maps.LatLng(63.4174652, 10.4043239),
             mapTypeId: google.maps.MapTypeId.TERRAIN,
             disableDefaultUI: true
         });
+        map.setOptions({styles: mapStyle});
         //data = getFaultPoints();
         //path = getPath();
         searchBox = new google.maps.places.SearchBox(input);
@@ -25,7 +51,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         });
         addSearchBoxListener();
         addClickListener();
-        //addHoverListener();
+        addHoverListener();
         initHeatMap();
         initTripPath();
         console.log("Google Maps and its APIs has been loaded");
@@ -60,9 +86,18 @@ app.controller('view2', function($scope, $modal, $log, $http) {
      * @returns {*} if checked, return icon, else, icon gets removed
      */
     $scope.isChecked = function(itemId) {
-        if($scope.currentlySelected == "Heatmap " + itemId) {
-            return 'glyphicon glyphicon-ok-sign';
-        }return false;
+        if($scope.currentlySelected.indexOf("Heatmap") > -1) {
+            if ($scope.currentlySelected == "Heatmap " + itemId) {
+                return 'glyphicon glyphicon-ok-sign';
+            }
+            return false;
+        }else if($scope.currentlySelected.indexOf("Rute") > -1) {
+            console.log("Rute " + itemId);
+            if ($scope.currentlySelected == "Rute " + itemId) {
+                return 'glyphicon glyphicon-ok-sign';
+            }
+            return false;
+        }
     }
 
     $scope.selectedHeatmap = function(itemId) {
@@ -94,20 +129,28 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     }
 
     $scope.selectedLines = function(itemId) {
-        if($scope.currentlySelected == "Linjer " + itemId) {
+        if($scope.currentlySelected == "Rute " + itemId) {
             $scope.currentlySelected = "";
             togglePath();
         }else{
-            $scope.currentlySelected = "Linjer " + itemId;
-            path = getPath(loadDummyPath());
-            tripPath = new google.maps.Polyline({
-                path: path,
-                geodesic: true,
-                strokeColor: '#FF0000',
-                strokeOpacity: 1.0,
-                strokeWeight: 2
-            });
-            tripPath.setMap(map);
+            $scope.currentlySelected = "Rute " + itemId;
+            switch(itemId) {
+                case "popularitet":
+                    path = getPath(loadDummyPath());
+                    tripPath = new google.maps.Polyline({
+                        path: path,
+                        geodesic: true,
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 1.0,
+                        strokeWeight: 2
+                    });
+                    tripPath.setMap(map);
+                    break;
+                case "samePath":
+                    $scope.samePath();
+                    break;
+            }
+
         }
 
     }
@@ -127,6 +170,10 @@ app.controller('view2', function($scope, $modal, $log, $http) {
 
     $scope.currentlySelected = "";
 
+
+    var samePathP1;
+    var samepthP2;
+    var errors;
     var activeJSONData;
     var data;
     var path;
@@ -156,17 +203,33 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             if (selectedArea != null) {
                 selectedArea.setMap(null);
             }
-            if($scope.enableTooltip){
+            if($scope.enableSamePath){
+                color = "#0008FF"
+                if(samePathP1)
+                    color="#FF0000"
                 console.log("WWWWW")
                 selectedArea = new google.maps.Circle({
-                    strokeColor: '#0008FF',
+                    strokeColor: color,
                     strokeOpacity: 0.8,
                     strokeWeight: 2,
-                    fillColor: '#0008FF',
+                    fillColor: color,
                     fillOpacity: 0.2,
                     map: map,
                     center: event.latLng,
                     radius: parseInt($scope.clickRadius)
+                });
+                google.maps.event.addListener(selectedArea, 'click', function(ev){
+                    samePathP1 = new google.maps.Circle({
+                        strokeColor: color,
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        fillColor: color,
+                        fillOpacity: 0.2,
+                        map: map,
+                        center: event.latLng,
+                        radius: parseInt($scope.clickRadius)
+                    });
+                    google.maps.event.clearInstanceListeners(samePathP1);
                 });
                 console.log()
             }
@@ -209,6 +272,21 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         return dataPoints;
     };
 
+    function getFaultPoints() {
+        dataPoints = [];
+        activeJSONData = [];
+        var i = 0;
+        angular.forEach(errors, function(data){
+          //  if(inInterval(dateComparify(data.Date), data.Time.replace(/:/g, ''))) {
+                dataPoints[i] = new google.maps.LatLng(data.lat, data.lon);
+                activeJSONData[i] = data;
+                i++;
+           // }
+        })
+        console.log(dataPoints.length);
+        return dataPoints;
+    }
+
     function getPath(dummyData) {
         dataPoints = [];
         var i = 0;
@@ -231,7 +309,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     }
 
     $scope.testChange = function() {
-        pointArray = getPoints(loadDummyData());
+        pointArray = getFaultPoints();
         heatmap.setData(pointArray);
     }
 
@@ -273,7 +351,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     }
 
 
-
+/*
     function getFaultPoints() {
         return [
         new google.maps.LatLng(63.41975, 10.40251),
@@ -282,6 +360,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             new google.maps.LatLng(63.41975, 10.40260),
             new google.maps.LatLng(63.41947, 10.40278)
     ]};
+    */
 
 
     function getPopularityPoints() {
@@ -372,6 +451,8 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     var clickedPoint;
     var selectedArea;
 
+    $scope.enableSamePath = false;
+
     var addClickListener = function() {
         google.maps.event.addListener(map, 'click', function (event) {
             if (selectedArea != null)
@@ -396,7 +477,10 @@ app.controller('view2', function($scope, $modal, $log, $http) {
                     $scope.openModal($scope.selectedCluster);
 
                 }
+            } else if ($scope.enableSamePath) {
+                console.log("Clicked with enableSamePath")
             }
+
         });
     }
 
@@ -405,7 +489,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         cluster = [];
         var i = 0;
             angular.forEach(activeJSONData, function (data) {
-                point = new google.maps.LatLng(data.Latitude, data.Longitude);
+                point = new google.maps.LatLng(data.lat, data.lon);
                 if (pointInCircle(point, $scope.clickRadius, clickedPoint)) {
                     console.log(data);
                     cluster[i] = data;
@@ -423,6 +507,12 @@ app.controller('view2', function($scope, $modal, $log, $http) {
        // console.log("Point: " + point + "   radius " + radius + "     Center: " + center);
         return (google.maps.geometry.spherical.computeDistanceBetween(point, center) <= radius)
     }
+
+    $scope.samePath = function() {
+        document.getElementById('samePath').checked = true;
+        console.log("checked");
+    }
+
 
 
     $scope.openModal = function(obj) {
@@ -474,6 +564,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
                         success(function(data){
                             console.log('Loaded');
                             console.log(data)
+                            errors = data;
                         }).
                         error(function(){
                             console.log('GET error failed');

@@ -7,22 +7,20 @@
             <th class="tableHeader">Id
                 <th class="tableHeader">Breddegrad
                 <th class="tableHeader">Lengdegrad
-                <th class="tableHeader">Dato
-                <th class="tableHeader">Tidspunkt
+                <th class="tableHeader">Tidsmerke
                 <th class="tableHeader">Bilde
                 <th class="tableHeader">Beskrivelse
                 </tr>
         </thead>
 
         <tbody ng-click="lineClicked = !lineClicked">
-        <tr ng-repeat = "data in selectedCluster" class="ng-scope tableSelection">
-            <td class ="ng-binding">{{data.Id}}</td>
-            <td class ="ng-binding">{{data.Longitude}}</td>
-            <td class ="ng-binding">{{data.Latitude}}</td>
-            <td class ="ng-binding">{{data.Date}}</td>
-            <td class ="ng-binding">{{data.Time}}</td>
-            <td class ="ng-binding">---</td>
-            <td class ="ng-binding">---</td>
+        <tr ng-repeat = "data in selectedCluster" class="ng-scope tableSelection" ng-click="setError(data)">
+            <td class ="ng-binding">{{data._id}}</td>
+            <td class ="ng-binding">{{data.lon}}</td>
+            <td class ="ng-binding">{{data.lat}}</td>
+            <td class ="ng-binding">{{data.timestamp}}</td>
+            <td class ="ng-binding" data-ng-class="hasImage(data)"></td>
+            <td class ="ng-binding">{{data.description}}</td>
             </tr>
         </tbody>
     </table>
@@ -31,11 +29,11 @@
 
 <div id="errorDescription" ng-show="lineClicked" ng-click="lineClicked = !lineClicked" ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}">
     <div class="col-md-12">
-        <img ng-src="{{dataClicked.image}}" class="center-block"> <br>
+        <img src="{{image.src}}" class="center-block"> <br>
     </div>
 
     <legend>Beskrivelse</legend>
-    <p>{{dataClicked.description}}</p>
+    <p>{{error.description}}</p>
 
     <div class="row" style="line-height: 25px; margin-bottom: 40px">
         <div class="col-md-4">
@@ -45,10 +43,10 @@
             <span class="label label-default">Lengdegrad: </span>
         </div>
         <div class="col-md-8">
-            <span>{{dataClicked.userId}}</span> <br>
-            <span>{{dataClicked.timestamp}}</span> <br>
-            <span>{{dataClicked.lat}}</span> <br>
-            <span>{{dataClicked.lon}}</span>
+            <span>{{error._id}}</span> <br>
+            <span>{{error.timestamp}}</span> <br>
+            <span>{{error.lat}}</span> <br>
+            <span>{{error.lon}}</span>
         </div>
     </div>
 
