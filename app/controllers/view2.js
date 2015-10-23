@@ -95,7 +95,6 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             }
             return false;
         }else if($scope.currentlySelected.indexOf("Rute") > -1) {
-            console.log("Rute " + itemId);
             if ($scope.currentlySelected == "Rute " + itemId) {
                 return 'glyphicon glyphicon-ok-sign';
             }
@@ -117,16 +116,16 @@ app.controller('view2', function($scope, $modal, $log, $http) {
 
             switch(itemId) {
                 case "speedVar":
-                    data = getPoints(loadDummyData());
+                    trips = getPoints(loadDummyData());
                     break;
                 case "popularity":
-                    data = getPopularityPoints();
+                    trips = getPopularityPoints();
                     break;
                 case "Veifeil":
-                    data = getFaultPoints();
+                    trips = getFaultPoints();
                     break;
             }
-            heatmap.setData(data);
+            heatmap.setData(trips);
         }
         console.log($scope.currentlySelected);
     }
@@ -174,17 +173,20 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     $scope.currentlySelected = "";
 
 
-    var samePathP1;
-    var samepthP2;
+    $scope.samePathP1;
+    $scope.samePathP2;
+
+    $scope.samePathArray = [];
+
     var errors;
     var activeJSONData;
-    var data;
+    var trips;
     var path;
     var heatmap;
     var pathArray;
     var pointArray;
     var initHeatMap = function() {
-        pointArray = new google.maps.MVCArray(data);
+        pointArray = new google.maps.MVCArray(trips);
         console.log("this: " + pointArray + " data: " + data);
         try {
             heatmap = new google.maps.visualization.HeatmapLayer({
@@ -212,9 +214,6 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             }
             if($scope.enableSamePath){
                 color = "#0008FF"
-                if(samePathP1)
-                    color="#FF0000"
-                console.log("WWWWW")
                 selectedArea = new google.maps.Circle({
                     strokeColor: color,
                     strokeOpacity: 0.8,
@@ -226,7 +225,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
                     radius: parseInt($scope.clickRadius)
                 });
                 google.maps.event.addListener(selectedArea, 'click', function(ev){
-                    samePathP1 = new google.maps.Circle({
+                    $scope.samePathArray.push(new google.maps.Circle({
                         strokeColor: color,
                         strokeOpacity: 0.8,
                         strokeWeight: 2,
@@ -235,13 +234,86 @@ app.controller('view2', function($scope, $modal, $log, $http) {
                         map: map,
                         center: event.latLng,
                         radius: parseInt($scope.clickRadius)
-                    });
-                    google.maps.event.clearInstanceListeners(samePathP1);
+                    }));
+                    //google.maps.event.clearInstanceListeners($scope.samePathArray[$scope.samePathArray.length-1]);
+                    google.maps.event.addListener(this, 'click', function(ev){
+                        ev.setMap(null);
+                        console.log("LOLOLOL");
+                    })
+                    $scope.hideFinishPathing = false;
                 });
-                console.log()
             }
         });
     }
+
+    $scope.hideSamePathView = function() {
+        var hide = $scope.currentlySelected != 'Rute samePath';
+        if(hide){
+            $scope.enableSamePath = false;
+            document.getElementById('samePathBtn').className = "btn btn-primary";
+        }
+        return hide;
+    }
+
+    $scope.drawnPath = [];
+    var samePathPartArray = [];
+    function drawPath(){
+        console.log("Drawing path");
+        angular.forEach(samePathPartArray, function(trip){
+            $scope.drawnPath.push(new google.maps.Polyline({
+                path: trip,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: .8,
+                strokeWeight: 2
+            }));
+            $scope.drawnPath[$scope.drawnPath.length-1].setMap(map);
+        });
+    }
+    $scope.clearPaths = function(){
+        console.log("clearing paths");
+        while($scope.drawnPath[0]){  //Remove circles
+            $scope.drawnPath.pop().setMap(null);
+        }
+        samePathPartArray = [];
+    }
+
+    $scope.finishPathing = function() {
+        $scope.enableSamePath = false;
+        document.getElementById('samePathBtn').className = "btn btn-primary";
+        if($scope.samePathArray.length == 0){return;}
+        console.log(trips.length);
+        console.log($scope.samePathArray);
+        angular.forEach(trips, function(trip) {  // For each trip
+            var numOfPointsInCircle = 0;
+            angular.forEach($scope.samePathArray, function(pointCircle){ // For each circle marked on the map
+                var cont = true;
+                angular.forEach(trip.tripData, function (point) {         // For each point in the trip
+                    if(cont) {
+                        gPoint = new google.maps.LatLng(point.lat, point.lon);
+                        if (pointInCircle(gPoint, pointCircle.radius, pointCircle.center)) { // If point is in the circle
+                            numOfPointsInCircle++;
+                            cont = false;
+                        }
+                    }
+                });
+            });
+            if(numOfPointsInCircle >= $scope.samePathArray.length){
+                tmpArr = [];
+                angular.forEach(trip.tripData,function(tripPoint){
+                    tmpArr.push(new google.maps.LatLng(tripPoint.lat, tripPoint.lon));
+                });
+                samePathPartArray.push(tmpArr);
+            }
+        });
+        while($scope.samePathArray[0]){  //Remove circles
+            $scope.samePathArray.pop().setMap(null);
+        }
+        if(samePathPartArray)
+            drawPath(samePathPartArray);
+    }
+
+    $scope.hideFinishPathing = true;
 
     function toggleHeatmap() {
         if(!heatmap)
@@ -299,7 +371,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         var i = 0;
         angular.forEach(dummyData, function(path){
             if(inInterval(dateComparify(path.Date), path.Time.replace(/:/g, ''))) {
-                dataPoints[i] = new google.maps.LatLng(path.Latitude, path.Longitude);
+                dataPoints[i] = new google.maps.LatLng(path.lat, path.lon);
                 i++;
             }
         })
@@ -335,11 +407,11 @@ app.controller('view2', function($scope, $modal, $log, $http) {
      */
     function inInterval(date, time) {
         fromDate = document.getElementById('fromDate').value.replace(/-/g,'');
-        //console.log(fromDate);
         toDate = document.getElementById('toDate').value.replace(/-/g,'');
 
         if(!timeInterval(time))
             return false;
+
 
         if(fromDate == "" && toDate == "")
             return true;
@@ -349,8 +421,6 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             return date >= fromDate;
         else
             return date >= fromDate && date <= toDate;
-
-
     }
 
     function timeInterval(time) {
@@ -478,7 +548,6 @@ app.controller('view2', function($scope, $modal, $log, $http) {
                 $scope.selectedCluster = proximity();
 
                 if ($scope.selectedCluster.length > 0) {
-                    console.log("HUEHUE", $scope.clickRadius)
                     selectedArea = new google.maps.Circle({
                         strokeColor: '#0008FF',
                         strokeOpacity: 0.8,
@@ -572,6 +641,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
                     success(function(data){
                         console.log('Loaded');
                         console.log(data)
+                        trips = data;
                     }).
                     error(function(){
                         console.log('GET trips failed');
