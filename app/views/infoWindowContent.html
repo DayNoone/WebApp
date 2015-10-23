@@ -19,7 +19,7 @@
             <td class ="ng-binding">{{data.lon}}</td>
             <td class ="ng-binding">{{data.lat}}</td>
             <td class ="ng-binding">{{data.timestamp}}</td>
-            <td class ="ng-binding" data-ng-class="hasImage(data)"></td>
+            <td class ="ng-binding" style="font-size: 20px; padding-left: 17px" data-ng-class="hasImage(data)"></td>
             <td class ="ng-binding">{{data.description}}</td>
             </tr>
         </tbody>
@@ -33,7 +33,7 @@
            <img src="{{image.src}}" class="center-block">
        </div>
        <div class="col-md-6">
-           <span><legend>Beskrivelse</legend></span> <br>
+           <span><legend ng-hide="error.description ==''">Beskrivelse</legend></span> <br>
            <span><p>{{error.description}}</p></span>
        </div>
    </div>

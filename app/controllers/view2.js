@@ -53,9 +53,9 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         addClickListener();
         addHoverListener();
         var heatMapInit = initHeatMap();
-        while(!heatMapInit){
-            heatMapInit = initHeatMap();
-        }
+        //while(!heatMapInit){
+        //    heatMapInit = initHeatMap();
+        //}
         initTripPath();
         console.log("Google Maps and its APIs has been loaded");
 
