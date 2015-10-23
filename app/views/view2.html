@@ -46,10 +46,14 @@
                 Klikkbare punkter
             </button>
         </div>
-        <div id="samePathView" ng-hide="currentlySelected != 'Rute samePath'">
-            <button id = "samePathBtn" type="button"  class="btn btn-success" data-toggle="button"  ng-click="enableSamePath = !enableSamePath">
-                Velg punkter i rute
-            </button>
+        <div id="samePathView" ng-hide="hideSamePathView()">
+            <div class="btn-group">
+                <button id = "samePathBtn" type="button"  class="btn btn-primary" data-toggle="button"  ng-click="enableSamePath = !enableSamePath">
+                    Velg punkter i rute
+                </button>
+                <button id="finishSamePathBtn" type="button" class="btn btn-success" ng-hide="hideFinishPathing" ng-click="finishPathing()">Fullfør</button>
+            </div>
+            <button type="button" class="btn btn-warning" ng-hide="drawnPath.length==0" ng-click="clearPaths()">Fjern ruter</button>
         </div>
     </div>
 
@@ -96,7 +100,7 @@
 
     <button type="button" ng-click="changePointRadius()">Oppdater radius</button>
 -->
-    <button type="button" class="btn" style="background: #ED7A43; color: white" ng-click="resetFilter()">Nullstill</button>
+    <button type="button" class="btn btn-warning" ng-click="resetFilter()">Nullstill</button>
 
     <div id="gmaps_panel_button"  ng-click="gmaps_slide('gmaps_panel_button')"><span class="glyphicon" ng-class="{true: 'glyphicon-triangle-right', false: 'glyphicon-triangle-left'}[gmapsActive]" aria-hidden="true"></span></div>
 
