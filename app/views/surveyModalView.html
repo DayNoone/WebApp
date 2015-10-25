@@ -1,0 +1,127 @@
+<div ng-controller="surveyController as surveyController">
+    <form  name="questionForm" ng-submit="surveyController.save(surveyController.model)" novalidate>
+        <div style="margin: 2em" ng-hide="lineClicked" ng-animate="'slide'">
+            <legend>Spørreundersøkelse</legend>
+
+            <div class="row" style="margin-top: 20px">
+                <div class="col-md-12">
+                    <span>Tittel :</span>
+                    <input placeholder="Tittel til spørreundersøkelse" type="text" ng-model="surveyController.model.title" required>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 20px">
+                <div class="col-md-6">
+                    <span>Expiration date :</span>
+                    <input type="date" ng-model="surveyController.model.expirationDate">
+                </div>
+                <div class="col-md-6">
+                    <span>Question type :</span>
+                    <select ng-model="surveyController.model.type" required>
+                        <option value="dropdown">Dropdown</option>
+                        <option value="check">Check boxes</option>
+                        <option value="radio">Radio buttons</option>
+                        <option value="text">Text</option>
+                        <option value="link">Link</option>
+                    </select>
+                </div>
+            </div>
+
+            <div ng-hide="surveyController.model.type == 'link'" class="row" style="margin-top: 20px">
+                <div class="col-md-12">
+                    <span>Spørsmål :</span>
+                    <textarea placeholder="Spørsmål" ng-model="surveyController.model.question"></textarea>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 20px">
+                <div class="col-md-12 centered">
+                    <label ng-hide="surveyController.model.type == 'text' || surveyController.model.type == 'link'">
+                        <span>Options :</span>
+                        <textarea placeholder="Options, one per line" ng-model="surveyController.model.options"></textarea>
+                    </label>
+
+                    <label ng-hide="surveyController.model.type !== 'link'">
+                        <span>Link :</span>
+                        <textarea placeholder="Link til spørreundersøkelse" ng-model="surveyController.model.link"></textarea>
+                    </label>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 20px">
+                <div class="col-md-12 centered">
+                    <label>
+                        <span>&nbsp;</span>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Opprett</button>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!--<form name="questionForm" ng-submit="questionCtrl.save(questionCtrl.model)" novalidate>-->
+    <!--<p>-->
+        <!--<label>-->
+            <!--<span>Title :</span>-->
+            <!--<input placeholder="Question title" type="text" ng-model="questionCtrl.model.title" required>-->
+        <!--</label>-->
+        <!--<label>-->
+            <!--<span>Ids to ask :</span>-->
+            <!--<input placeholder="Ids to ask, empty for everybody." type="text" ng-model="questionCtrl.model.userIds">-->
+            <!--<a href="#" style="margin-left: 10px; margin-top: 3px;" ng-show="false" ng-click="showUserPicker = !showUserPicker">{{showUserPicker ? 'Hide' : 'Show'}} user picker</a>-->
+        <!--</label>-->
+    <!--<div class="questionUserPicker" ng-show="showUserPicker">-->
+        <!--<table class="helpTable">-->
+            <!--<tr>-->
+                <!--<th>Command</th>-->
+                <!--<th>Example</th>-->
+                <!--<th>Explanation</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td>=</td>-->
+                <!--<td>Email=erlend.dahl@sintef.no</td>-->
+                <!--<td>Finds all users with the given value in the given field, for example all users with e-mail 'erlend.dahl@sintef.no'.</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td>!=</td>-->
+                <!--<td>Email!=erlend.dahl@sintef.no</td>-->
+                <!--<td>Finds all users with a value DIFFERENT FROM the given value in the given field, for example all users with ANOTHER e-mail than 'erlend.dahl@sintef.no'.</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td>:</td>-->
+                <!--<td>Address:øst</td>-->
+                <!--<td>Finds all users where the given field CONTAINS the given value, for example all users with 'øst' in their address (Nardo Øst, Einar Østnis vei, etc).</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td>!:</td>-->
+                <!--<td>Address!:øst</td>-->
+                <!--<td>Finds all users where the given field DOES NOT CONTAIN the given value, for example all users WITHOUT 'øst' in their address (Nardo Vest, Edgar Bosens vei, etc).</td>-->
+            <!--</tr>-->
+        <!--</table>-->
+        <!--<p><br/>Enter one command on each line, and add users fitting this command by clicking 'Add users'.</p>-->
+        <!--<textarea ng-model="userPickerQuery"></textarea>-->
+        <!--<a href="#" style="margin-left: 10px; margin-top: 3px;" ng-click="addUsers(userPickerQuery)">{{showUserPicker ? 'Hide' : 'Show'}} user picker</a>-->
+    <!--</div>-->
+    <!--<label>-->
+        <!--<span>Expiration date :</span>-->
+        <!--<input type="text" ui-date-format="yy-mm-dd" ui-date="{dateFormat: 'dd. MM yy'}"  ng-model="questionCtrl.model.expirationDate" placeholder="Question disappears after this date. Empty for no expiration date.">-->
+    <!--</label>-->
+    <!--<label>-->
+        <!--<span>Question type :</span>-->
+        <!--<select ng-model="questionCtrl.model.type" required>-->
+            <!--<option value="dropdown">Dropdown</option>-->
+            <!--<option value="check">Check boxes</option>-->
+            <!--<option value="radio">Radio buttons</option>-->
+            <!--<option value="text">Text</option>-->
+        <!--</select>-->
+    <!--</label>-->
+    <!--<label ng-hide="questionCtrl.model.type == 'text'">-->
+        <!--<span>Options :</span>-->
+        <!--<textarea placeholder="Options, one per line" ng-model="questionCtrl.model.options"></textarea>-->
+    <!--</label>-->
+    <!--<label>-->
+        <!--<span>&nbsp;</span>-->
+        <!--<button class="btn btn-lg btn-primary btn-block" type="submit">Ask them!</button>-->
+    <!--</label>-->
+    <!--</p>-->
+<!--</form>-->

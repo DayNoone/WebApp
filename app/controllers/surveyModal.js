@@ -1,0 +1,98 @@
+app.controller("surveyController", function($scope, $http, obj) {
+
+    var service_URL = "https://tf2.sintef.no:8084/smioTest/api/";
+    var uid = "sondre";
+    var pw = "dabchick402";
+
+    console.log(obj);
+
+    var controller = this;
+    controller.uid = '';
+    controller.token = '';
+    controller.model = {
+        type: 'text'
+    };
+
+    this.save = function (question){
+
+        if(!question.title){
+            console.log("Please enter a title!");
+            console.log("date: " + question.expirationDate);
+            return;
+        }
+
+        if(question.type !== 'text'){
+            if(!question.options || question.options.split('\n').length < 2){
+                console.log("Please enter at least two options (one option per line) for this question type.");
+                return;
+            }
+        }
+
+        if(question.expirationDate !== null){
+            //TODO: Expiration date on server side is one day earlier than what is sent - need to fix this(if we are going to use expiration date.
+        }
+
+        var finalQuestion = {
+            expirationTimestamp: question.expirationDate,
+            title: question.title,
+            type: question.type,
+            alternatives: question.options && question.type !== 'text' ? question.options.split('\n') : [],
+            userIds: question.userIds? question.userIds.split(',') : [],
+            anonymous: question.anonymous ? true : false
+        };
+
+        for (var i = 0; i < finalQuestion.alternatives.length; i++)
+            finalQuestion.alternatives[i] = finalQuestion.alternatives[i].trim();
+        for (var i = 0; i < finalQuestion.userIds.length; i++)
+            finalQuestion.userIds[i] = finalQuestion.userIds[i].trim();
+
+        console.log("spørsmål: " + question);
+        console.log(finalQuestion);
+
+        $http({
+            method : 'POST',
+            data : {username: uid, password:pw},
+            url : service_URL})
+            .success(function(data) {
+                console.log("Success");
+                console.log(data);
+                userid = data['_id']
+                token = data['token']
+                $http.post(service_URL + 'questions', finalQuestion, {params: {uid: userid, token: token}}).
+                    success(function(data){
+                        console.log('Posted');
+                        console.log(data)
+                        controller.model = {
+                            type: 'text'
+                        };
+                        //$rootScope.$emit('QuestionController.questionAdded', {});
+                    }).
+                    error(function(){
+                        console.log('POST question failed');
+                    });
+            }).error(function(){
+                console.log("POST failed");
+            });
+    };
+    //$scope.error;
+    //
+    //$scope.setError = function(error) {
+    //    $scope.error = error;
+    //    $scope.image.src = 'data:image/png;base64,'+error.image;
+    //    if($scope.image.src == "data:image/png;base64,undefined"){
+    //        $scope.image.src = 'resources/noimage.png';
+    //    }
+    //    console.log($scope.image.src);
+    //}
+    //
+    ////$scope.dataClicked = {"userId":39,"lat":63.42945947,"lon":10.39348956,"timestamp":"09/10/2015/00:04:34", "image": 'resources/voldemort.png', "description":"Problem description: He who's face must have an error of 404: nose not found."};
+    //
+    //
+    //$scope.hasImage = function(error){
+    //    if(error.image != null) {
+    //        var image = 'glyphicon glyphicon-ok-sign center-block'
+    //        return image;
+    //    }else return false;
+    //}
+
+});

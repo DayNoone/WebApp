@@ -10,7 +10,7 @@ app.controller("roadFaults", function($scope, obj) {
         $scope.error = error;
         $scope.image.src = 'data:image/png;base64,'+error.image;
         if($scope.image.src == "data:image/png;base64,undefined"){
-            $scope.image.src = 'resources/voldemort.png';
+            $scope.image.src = 'resources/noimage.png';
         }
         console.log($scope.image.src);
     }

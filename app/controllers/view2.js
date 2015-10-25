@@ -245,6 +245,26 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             }
         });
     }
+    
+    $scope.openSurveyModal = function (obj) {
+        //console.log("test");
+        var modalInstance = $modal.open({
+            templateUrl: 'views/surveyModalView.html',
+            controller: 'surveyController',
+            size: 'lg',
+            resolve: {
+                obj: function () {
+                    return obj;
+                }
+            }
+        });
+        //modalInstance.result.then(function (status) {
+        //    console.log(status);
+        //}, function () {
+        //    selectedArea.setMap(null);
+        //    $log.info('Modal dismissed at: ' + new Date());
+        //});
+    }
 
     $scope.hideSamePathView = function() {
         var hide = $scope.currentlySelected != 'Rute samePath';
@@ -395,7 +415,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     }
 
     $scope.testChange = function() {
-        pointArray = getFaultPoints();
+        pointArray = getFaultPoints()   ;
         heatmap.setData(pointArray);
     }
 
@@ -529,7 +549,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         document.getElementById("toDate").value = "";
         document.getElementById("fromTime").value = "";
         document.getElementById("toTime").value = "";
-        testChange();
+        $scope.testChange();
     }
 
     $scope.selectedCluster = [];
