@@ -275,3 +275,13 @@ html, body {
   cursor:pointer;
   color:white;
 }
+
+.animate-hide{
+  transition: 0.5s linear all;
+  height: 220px;
+  overflow: hidden;
+}
+.animate-hide.ng-hide{
+  height:0px;
+  opacity: 0;
+}

@@ -21,13 +21,27 @@
 
     </div>
     <div>
-        <div id="veifeilView" ng-hide="hideHeatMap()" style="margin-bottom:2em">
+        <div id="veifeilView" class="animate-hide" ng-hide="hideHeatMap()" style="margin-bottom:2em">
             <legend>Veifeil</legend>
-            <button id = "enableTooltip" type="button"  class="btn btn-primary" data-toggle="button"  ng-click="enableTooltip = !enableTooltip">
+            <span style="height:60px;">
+                <div class="input-group">
+                    <span class="input-group-addon">Intensitet </span>
+                    <input class="form-control" type="range" max = "{{maxIntensity}}" min = "1" ng-model="intensity" ng-change="changeIntensity()">
+                </div>
+            </span>
+            <span style="height:60px;">
+                <div class="input-group">
+                    <span class="input-group-addon" style="width:87px">Radius </span>
+                    <input class="form-control" type="range" max = "100" min = "1" ng-model="pointRadius" ng-change="changePointRadius()">
+                </div>
+            </span>
+
+
+            <button id = "enableTooltip" type="button" style="margin-top: 20px;" class="btn btn-primary" data-toggle="button"  ng-click="enableTooltip = !enableTooltip">
                 Klikkbare punkter
             </button>
         </div>
-        <div id="samePathView" ng-hide="hideSamePathView()">
+        <div id="samePathView" class="animate-hide" ng-hide="hideSamePathView()">
             <legend>Ruter</legend>
             <div class="btn-group">
                 <button id = "samePathBtn" type="button"  class="btn btn-primary" data-toggle="button"  ng-click="enableSamePath = !enableSamePath">
@@ -35,10 +49,10 @@
                 </button>
                 <button id="finishSamePathBtn" type="button" class="btn btn-success" ng-click="finishPathing()">Fullfør</button>
             </div>
-            <button type="button" class="btn btn-primary" ng-click="openSurveyModal()">Lag undersøkelse til punkt(er)</button>
-            <button type="button" class="btn btn-warning" ng-hide="drawnPath.length==0" ng-click="clearPaths()">Fjern ruter</button>
+            <button type="button" style="margin-top: 2em" class="btn btn-primary" ng-click="openSurveyModal()">Lag undersøkelse til punkt(er)</button>
+            <button type="button" style="margin-top: 2em" class="btn btn-warning" ng-hide="drawnPath.length==0" ng-click="clearPaths()">Fjern ruter</button>
             <!--<div style="margin-top: 20px;" ng-show="tabCtrl.isSet(0)" ng-controller="QuestionController as questionCtrl" ng-include="'modules/newquestion.html'"></div>-->
-            <button type="button" class="btn btn-info" ng-hide="drawnPath.length!=0" ng-click="samePath()">Vis turer</button>
+            <button type="button" style="margin-top: 2em" class="btn btn-info" ng-hide="drawnPath.length!=0" ng-click="samePath()">Vis turer</button>
         </div>
     </div>
 

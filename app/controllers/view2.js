@@ -108,6 +108,11 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         //heatmap.setMap(null);
     }
 
+    $scope.changeIntensity = function(){
+        console.log("CHANGE INTENSITY: " + $scope.intensity);
+        heatmap.set('maxIntensity',$scope.maxIntensity+1- $scope.intensity)
+    }
+
     $scope.selectedHeatmap = function (itemId) {
         if ($scope.veifeilIcon) {
             $scope.currentlySelected = "";
@@ -182,6 +187,8 @@ app.controller('view2', function($scope, $modal, $log, $http) {
 
     $scope.pointRadius = 20;
     $scope.clickRadius = 50;
+    $scope.intensity = 5;
+    $scope.maxIntensity = 20;
 
     $scope.fromDate = "";
     $scope.toDate = "";
@@ -211,6 +218,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         try {
             heatmap = new google.maps.visualization.HeatmapLayer({
                 data: pointArray,
+                maxIntensity: $scope.intensity,
                 map: map
             });
             heatmap.set('radius', heatmap.get('radius') ? null : $scope.pointRadius);
@@ -585,8 +593,8 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     // END OF GOOGLE DEVELOPER CODE
 
     $scope.changePointRadius = function () {
-        radius = $scope.pointRadius;
-        heatmap.set('radius', radius);
+        console.log($scope.pointRadius);
+        heatmap.set('radius', parseInt($scope.pointRadius));
     }
 
     $scope.resetFilter = function () {
