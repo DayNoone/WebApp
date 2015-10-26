@@ -20,6 +20,16 @@ html, body {
   z-index: 0;
 }
 
+#loadingScreen {
+  top:70px;
+  height: 97%;
+  width: 100%;
+  z-index: 3;
+  position:fixed;
+  background: white;
+  opacity: 0.5;
+}
+
 .category_container{
   position: absolute;
   padding: 2em;
