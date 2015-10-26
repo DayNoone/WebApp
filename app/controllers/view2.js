@@ -231,6 +231,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             if (selectedArea != null) {
                 selectedArea.setMap(null);
             }
+            //console.log("enable: " + $scope.enableSamePath);
             if ($scope.enableSamePath) {
                 color = "#0008FF"
                 selectedArea = new google.maps.Circle({
@@ -287,7 +288,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
 
     $scope.hideSamePathView = function () {
         if ($scope.samePathIcon) {
-            $scope.enableSamePath = false;
+            //$scope.enableSamePath = false;
             document.getElementById('samePathBtn').className = "btn btn-primary";
         }
         return !$scope.samePathIcon;
@@ -320,6 +321,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     }
 
     $scope.finishPathing = function () {
+        if($scope.hideFinishPathing) return;
         $scope.clearPaths();
         $scope.enableSamePath = false;
         document.getElementById('samePathBtn').className = "btn btn-primary";
@@ -374,6 +376,8 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         //selectedArea.setMap(null);
         if (samePathPartArray)
             drawPaths(samePathPartArray);
+
+        $scope.hideFinishPathing = true;
     }
 
     $scope.hideFinishPathing = true;
@@ -470,14 +474,14 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         return hours + "" + minutes;
     }
 
-    $scope.testChange = function () {
+    $scope.filterData = function () {
         if ($scope.samePathIcon) {
             $scope.clearPaths();
             calculatePath();
             drawPaths(path);
             console.log("HERE");
 
-        } else {
+        } if($scope.veifeilIcon){
             pointArray = getFaultPoints();
             heatmap.setData(pointArray);
         }
@@ -614,7 +618,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         document.getElementById("toDate").value = "";
         document.getElementById("fromTime").value = "";
         document.getElementById("toTime").value = "";
-        testChange();
+        filterData();
     }
 
     $scope.selectedCluster = [];
@@ -683,6 +687,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
 
 
     $scope.openModal = function (obj) {
+        $scope.enableTooltip = false;
         var modalInstance = $modal.open({
             templateUrl: 'views/infoWindowContent.html',
             controller: 'roadFaults',

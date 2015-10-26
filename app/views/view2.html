@@ -30,10 +30,10 @@
         <div id="samePathView" ng-hide="hideSamePathView()">
             <legend>Ruter</legend>
             <div class="btn-group">
-                <button id = "samePathBtn" type="button"  class="btn btn-primary" data-toggle="button"  ng-click="enableSamePath = !enableSamePath; console.log('TEST')">
+                <button id = "samePathBtn" type="button"  class="btn btn-primary" data-toggle="button"  ng-click="enableSamePath = !enableSamePath">
                     Velg punkter i rute
                 </button>
-                <button id="finishSamePathBtn" type="button" class="btn btn-success" ng-hide="hideFinishPathing" ng-click="finishPathing()">Fullfør</button>
+                <button id="finishSamePathBtn" type="button" class="btn btn-success" ng-click="finishPathing()">Fullfør</button>
             </div>
             <button type="button" class="btn btn-warning" ng-hide="drawnPath.length==0" ng-click="clearPaths()">Fjern ruter</button>
             <button type="button" class="btn btn-info" ng-hide="drawnPath.length!=0" ng-click="samePath()">Vis turer</button>
@@ -50,21 +50,21 @@
     <input id="searchField" class="controls form-control" type="text" placeholder="Search locations" style="margin-bottom:1em">
     <div style="height:60px;">
         <div class="input-group">
-            <span class="input-group-addon">Fra: </span><input class="form-control" type="date" id="fromDate" ng-change="testChange()" ng-model="fromDate"/>
+            <span class="input-group-addon">Fra: </span><input class="form-control" type="date" id="fromDate" ng-change="filterData()" ng-model="fromDate"/>
         </div>
     </div>
 
     <div style="height:60px; margin-bottom: 1em">
         <div class="input-group">
-            <span class="input-group-addon">Til: </span><input class="form-control" type="date" id="toDate" ng-change="testChange()" ng-model="toDate"/>
+            <span class="input-group-addon">Til: </span><input class="form-control" type="date" id="toDate" ng-change="filterData()" ng-model="toDate"/>
         </div>
     </div>
 
     <div style="height:60px; margin-bottom: 1em">
         <div class="input-group">
             <span class="input-group-addon">Tidsrom: </span>
-            <input class="form-control" type="time" id="fromTime" ng-model="fromTime" ng-change="testChange()"/>
-            <input class="form-control" type="time" id="toTime" ng-model="toTime" ng-change="testChange()"/>
+            <input class="form-control" type="time" id="fromTime" ng-model="fromTime" ng-change="filterData()"/>
+            <input class="form-control" type="time" id="toTime" ng-model="toTime" ng-change="filterData()"/>
         </div>
     </div>
 
@@ -84,7 +84,7 @@
 
     <button type="button" ng-click="changePointRadius()">Oppdater radius</button>
 -->
-    <button type="button" class="btn btn-warning" ng-click="resetFilter()">Nullstill</button>
+    <button type="button" class="btn btn-warning" ng-hide="true" ng-click="resetFilter()">Nullstill</button>
 
     <div id="gmaps_panel_button"  ng-click="gmaps_slide('gmaps_panel_button')"><span class="glyphicon" ng-class="{true: 'glyphicon-triangle-right', false: 'glyphicon-triangle-left'}[gmapsActive]" aria-hidden="true"></span></div>
 
