@@ -1,20 +1,33 @@
-app.controller("surveyController", function($scope, $http, obj) {
+app.controller("surveyController", function($scope, $http, circles) {
 
     var service_URL = "https://tf2.sintef.no:8084/smioTest/api/";
     var uid = "sondre";
     var pw = "dabchick402";
 
-    console.log(obj);
+    $scope.samePathArray = circles;
+    console.log(circles[0].center.lat());
 
-    var controller = this;
-    controller.uid = '';
-    controller.token = '';
-    controller.model = {
+    $scope.controller = this;
+    $scope.controller.uid = '';
+    $scope.controller.token = '';
+    $scope.controller.model = {
         type: 'text'
     };
 
-    this.save = function (question){
+    $scope.save = function (question){
 
+        var circlePoints = [];
+
+        angular.forEach(circles, function(circle){
+            tmpArr = {
+                lat : circle.center.lat() + "",
+                lon : circle.center.lng() + "",
+                radius : circle.radius + ""
+            }
+            circlePoints.push(tmpArr);
+        })
+
+        console.log(circlePoints);
         if(!question.title){
             console.log("Please enter a title!");
             console.log("date: " + question.expirationDate);
@@ -38,7 +51,8 @@ app.controller("surveyController", function($scope, $http, obj) {
             type: question.type,
             alternatives: question.options && question.type !== 'text' ? question.options.split('\n') : [],
             userIds: question.userIds? question.userIds.split(',') : [],
-            anonymous: question.anonymous ? true : false
+            anonymous: question.anonymous ? true : false,
+            circles: circlePoints
         };
 
         for (var i = 0; i < finalQuestion.alternatives.length; i++)
@@ -62,7 +76,7 @@ app.controller("surveyController", function($scope, $http, obj) {
                     success(function(data){
                         console.log('Posted');
                         console.log(data)
-                        controller.model = {
+                        $scope.controller.model = {
                             type: 'text'
                         };
                         //$rootScope.$emit('QuestionController.questionAdded', {});

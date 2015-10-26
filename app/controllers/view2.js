@@ -246,25 +246,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         });
     }
     
-    $scope.openSurveyModal = function (obj) {
-        //console.log("test");
-        var modalInstance = $modal.open({
-            templateUrl: 'views/surveyModalView.html',
-            controller: 'surveyController',
-            size: 'lg',
-            resolve: {
-                obj: function () {
-                    return obj;
-                }
-            }
-        });
-        //modalInstance.result.then(function (status) {
-        //    console.log(status);
-        //}, function () {
-        //    selectedArea.setMap(null);
-        //    $log.info('Modal dismissed at: ' + new Date());
-        //});
-    }
+
 
     $scope.hideSamePathView = function() {
         var hide = $scope.currentlySelected != 'Rute samePath';
@@ -300,6 +282,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
 
     $scope.finishPathing = function() {
         $scope.enableSamePath = false;
+        console.log($scope.samePathArray.length);
         document.getElementById('samePathBtn').className = "btn btn-primary";
         if($scope.samePathArray.length == 0){return;}
         console.log(trips.length);
@@ -628,6 +611,26 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             resolve: {
                 obj: function () {
                     return obj;
+                }
+            }
+        });
+        modalInstance.result.then(function (status) {
+            console.log(status);
+        }, function () {
+            selectedArea.setMap(null);
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    }
+
+    $scope.openSurveyModal = function () {
+        //console.log("test");
+        var modalInstance = $modal.open({
+            templateUrl: 'views/surveyModalView.html',
+            controller: 'surveyController',
+            size: 'lg',
+            resolve: {
+                circles: function () {
+                    return $scope.samePathArray;
                 }
             }
         });
