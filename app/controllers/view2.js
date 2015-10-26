@@ -95,11 +95,11 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     $scope.samePathIcon = false;
     $scope.isChecked = function (itemId) {
         if (itemId == 'Veifeil') {
-            if($scope.veifeilIcon)
-            return 'glyphicon glyphicon-ok-sign';
-        }else if (itemId == 'samePath') {
-            if($scope.samePathIcon)
-            return 'glyphicon glyphicon-ok-sign';
+            if ($scope.veifeilIcon)
+                return 'glyphicon glyphicon-ok-sign';
+        } else if (itemId == 'samePath') {
+            if ($scope.samePathIcon)
+                return 'glyphicon glyphicon-ok-sign';
         }
         return false;
     }
@@ -137,7 +137,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     $scope.selectedLines = function (itemId) {
         // Clear heatmaps
         //heatmap.setMap(null);
-            togglePath();
+        togglePath();
         if ($scope.samePathIcon) {
             $scope.currentlySelected = "";
         } else {
@@ -152,6 +152,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             }
 
         }
+    }
 
     function calculatePath() {
         path = [];
@@ -229,7 +230,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             if (selectedArea != null) {
                 selectedArea.setMap(null);
             }
-            if($scope.enableSamePath){
+            if ($scope.enableSamePath) {
                 color = "#0008FF"
                 selectedArea = new google.maps.Circle({
                     strokeColor: color,
@@ -275,10 +276,10 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             }
         });
     }
-    
 
-    $scope.hideHeatMap = function() {
-        if($scope.veifeilIcon) {
+
+    $scope.hideHeatMap = function () {
+        if ($scope.veifeilIcon) {
             document.getElementById('enableTooltip').className = "btn btn-primary";
         }
         return !$scope.veifeilIcon;
@@ -319,7 +320,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     }
 
     $scope.finishPathing = function () {
-        if($scope.hideFinishPathing) return;
+        if ($scope.hideFinishPathing) return;
         $scope.clearPaths();
         $scope.enableSamePath = false;
         document.getElementById('samePathBtn').className = "btn btn-primary";
@@ -479,7 +480,8 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             drawPaths(path);
             console.log("HERE");
 
-        } if($scope.veifeilIcon){
+        }
+        if ($scope.veifeilIcon) {
             pointArray = getFaultPoints();
             heatmap.setData(pointArray);
         }
@@ -705,6 +707,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     }
 
     $scope.openSurveyModal = function () {
+        if($scope.samePathArray.length == 0) return;
         //console.log("test");
         var modalInstance = $modal.open({
             templateUrl: 'views/surveyModalView.html',
@@ -766,5 +769,4 @@ app.controller('view2', function($scope, $modal, $log, $http) {
 
 
     }
-
 })
