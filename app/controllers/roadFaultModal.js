@@ -9,6 +9,9 @@ app.controller("roadFaults", function($scope, obj) {
     $scope.setError = function(error) {
         $scope.error = error;
         $scope.image.src = 'data:image/png;base64,'+error.image;
+        if($scope.image.src == "data:image/png;base64,undefined"){
+            $scope.image.src = 'resources/voldemort.png';
+        }
         console.log($scope.image.src);
     }
 
@@ -17,7 +20,8 @@ app.controller("roadFaults", function($scope, obj) {
 
     $scope.hasImage = function(error){
         if(error.image != null) {
-            return 'glyphicon glyphicon-ok-sign';
+            var image = 'glyphicon glyphicon-ok-sign center-block'
+            return image;
         }else return false;
     }
 
