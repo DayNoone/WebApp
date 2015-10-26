@@ -238,3 +238,8 @@ html, body {
 .custom-Checkbox:checked {
   background: red;
 }
+
+#page-wrap{
+  margin: auto;
+  width: 400px;
+}

@@ -1,36 +1,54 @@
-<div>
+<div id="page-wrap">
     <form  name="questionForm" novalidate>
         <div style="margin: 2em" ng-hide="lineClicked" ng-animate="'slide'">
-            <legend>Sp�rreunders�kelse</legend>
+            <legend>Spørreundersøkelse</legend>
 
             <div class="row" style="margin-top: 20px">
                 <div class="col-md-12">
-                    <span>Tittel :</span>
-                    <input placeholder="Tittel til sp�rreunders�kelse" type="text" ng-model="controller.model.title" required>
+                    <div class="input-group">
+                        <span class="input-group-addon">Tittel :</span>
+                        <input class="form-control" placeholder="Tittel til spørreundersøkelse" type="text" ng-model="controller.model.title" required>
+                    </div>
                 </div>
             </div>
 
             <div class="row" style="margin-top: 20px">
                 <div class="col-md-6">
-                    <span>Expiration date :</span>
+                    <span>Utløpsdato</span>
                     <input type="date" ng-model="controller.model.expirationDate">
-                </div>
-                <div class="col-md-6">
-                    <span>Question type :</span>
-                    <select ng-model="controller.model.type" required>
-                        <option value="dropdown">Dropdown</option>
-                        <option value="check">Check boxes</option>
-                        <option value="radio">Radio buttons</option>
-                        <option value="text">Text</option>
-                        <option value="link">Link</option>
-                    </select>
+                </div><!--
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Spørsmålstype
+                        <span class="caret"></span>
+                        </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" ng-model="controller.model.type" required>
+                        <li><a value="dropdown">Dropdown</a></li>
+                        <li><a value="check">Checkboxes</a></li>
+                        <li><a value="radio">Radio buttons</a></li>
+                        <li><a value="text">Tekst</a></li>
+                        <li><a value="link">Link</a></li>
+                    </ul>
+
+                    -->
+                    <div class="col-md-6">
+                        <span>Spørsmålstype:</span>
+                        <select ng-model="controller.model.type" required>
+                            <option value="dropdown">Dropdown</option>
+                            <option value="check">Check boxes</option>
+                            <option value="radio">Radio buttons</option>
+                            <option value="text">Text</option>
+                            <option value="link">Link</option>
+                        </select>
+
+
                 </div>
             </div>
 
             <div ng-hide="controller.model.type == 'link'" class="row" style="margin-top: 20px">
-                <div class="col-md-12">
-                    <span>Sp�rsm�l :</span>
-                    <textarea placeholder="Sp�rsm�l" ng-model="controller.model.question"></textarea>
+                <div  class="input-group">
+                    <span class="input-group-addon">Spørsmål :</span>
+                    <textarea class="form-control" placeholder="Spørsmål" ng-model="controller.model.question"></textarea>
                 </div>
             </div>
 
@@ -38,12 +56,12 @@
                 <div class="col-md-12 centered">
                     <div ng-hide="controller.model.type == 'text' || controller.model.type == 'link'">
                         <span>Options :</span>
-                        <textarea placeholder="Options, one per line" ng-model="controller.model.options"></textarea>
+                        <textarea placeholder="Valg, en per linje" ng-model="controller.model.options"></textarea>
                     </div>
 
                     <label ng-hide="controller.model.type !== 'link'">
                         <span>Link :</span>
-                        <textarea placeholder="Link til sp�rreunders�kelse" ng-model="controller.model.link"></textarea>
+                        <textarea placeholder="Link til spørreundersøkelse" ng-model="controller.model.link"></textarea>
                     </label>
                 </div>
             </div>

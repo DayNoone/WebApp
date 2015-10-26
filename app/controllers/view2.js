@@ -681,8 +681,6 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             }).error(function(){
                 console.log("POST failed");
         });
-
-
     }
 
     var loadDummyData = function() {
