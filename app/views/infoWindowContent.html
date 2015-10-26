@@ -27,7 +27,7 @@
 
 </div>
 
-<div class="" id="errorDescription" ng-show="lineClicked" ng-click="lineClicked = !lineClicked" ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}">
+<div class="" id="errorDescription" ng-show="lineClicked" >
         <div class="row">
             <div class="col-md-6">
                 <legend>Beskrivelse</legend>
@@ -45,7 +45,9 @@
                         <span>{{error.timestamp}}</span> <br>
                         <span>{{error.lat}}</span> <br>
                         <span>{{error.lon}}</span>
-                        <span><button style="margin-top: 20px" ng-click="lineClicked = !lineClicked" id = "enableTooltip" type="button"  class="btn btn-primary"  ng-click="enableTooltip = !enableTooltip">Tilbake </button></span>
+                    </div>
+                    <div class="col-md-12">
+                        <span><button style="margin-top: 20px" ng-click="lineClicked = !lineClicked" ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}" id = "enableTooltip" type="button"  class="btn btn-primary"  ng-click="enableTooltip = !enableTooltip">Tilbake </button></span>
                     </div>
                 </div>
             </div>
