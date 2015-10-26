@@ -4,65 +4,50 @@
             <legend>Spørreundersøkelse</legend>
 
             <div class="row" style="margin-top: 20px">
-                <div class="col-md-12">
-                    <div class="input-group">
-                        <span class="input-group-addon">Tittel :</span>
+                    <div class="input-group col-md-12">
+                        <span class="input-group-addon" style="width: 120px">Tittel :</span>
                         <input class="form-control" placeholder="Tittel til spørreundersøkelse" type="text" ng-model="controller.model.title" required>
                     </div>
-                </div>
             </div>
 
             <div class="row" style="margin-top: 20px">
-                <div class="col-md-6">
-                    <span>Utløpsdato</span>
-                    <input type="date" ng-model="controller.model.expirationDate">
-                </div><!--
-                <div class="dropdown">
-                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        Spørsmålstype
+                <div class="col-md-12 input-group">
+                    <span class="input-group-addon" style="width: 120px">Utløpsdato</span>
+                    <input type="date" ng-model="controller.model.expirationDate" class="form-control">
+                </div>
+                <div class="dropdown col-md-6 input-group" style="margin-top: 20px" >
+                    <span class="input-group-addon">Spørsmålstype</span>
+                    <button class="btn btn-default dropdown-toggle form-control" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        {{controller.model.type}}
                         <span class="caret"></span>
                         </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" ng-model="controller.model.type" required>
-                        <li><a value="dropdown">Dropdown</a></li>
-                        <li><a value="check">Checkboxes</a></li>
-                        <li><a value="radio">Radio buttons</a></li>
-                        <li><a value="text">Tekst</a></li>
-                        <li><a value="link">Link</a></li>
+
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" required style="margin-left:28px">
+                        <li><a class="b" value="dropdown" ng-click="controller.model.type = 'dropdown'">Dropdown</a></li>
+                        <li><a class="b" value="check" ng-click="controller.model.type = 'check'">Checkboxes</a></li>
+                        <li><a class="b" value="radio" ng-click="controller.model.type = 'radio'">Radio buttons</a></li>
+                        <li><a class="b" value="text" ng-click="controller.model.type = 'text'">Tekst</a></li>
+                        <li><a class="b" value="link" ng-click="controller.model.type = 'link'">Link</a></li>
                     </ul>
-
-                    -->
-                    <div class="col-md-6">
-                        <span>Spørsmålstype:</span>
-                        <select ng-model="controller.model.type" required>
-                            <option value="dropdown">Dropdown</option>
-                            <option value="check">Check boxes</option>
-                            <option value="radio">Radio buttons</option>
-                            <option value="text">Text</option>
-                            <option value="link">Link</option>
-                        </select>
-
-
                 </div>
             </div>
 
             <div ng-hide="controller.model.type == 'link'" class="row" style="margin-top: 20px">
                 <div  class="input-group">
-                    <span class="input-group-addon">Spørsmål :</span>
-                    <textarea class="form-control" placeholder="Spørsmål" ng-model="controller.model.question"></textarea>
+                    <span class="input-group-addon" style="width: 140px">Spørsmål :</span>
+                    <textarea class="form-control" style="width:260px" placeholder="Spørsmål" ng-model="controller.model.question"></textarea>
                 </div>
             </div>
 
             <div class="row" style="margin-top: 20px">
-                <div class="col-md-12 centered">
-                    <div ng-hide="controller.model.type == 'text' || controller.model.type == 'link'">
-                        <span>Options :</span>
-                        <textarea placeholder="Valg, en per linje" ng-model="controller.model.options"></textarea>
-                    </div>
+                <div class="input-group" ng-hide="controller.model.type == 'text' || controller.model.type == 'link'">
+                    <span cass="input-group-addon" style="width: 120px">Options :</span>
+                    <textarea class="form-control" placeholder="Valg, en per linje" ng-model="controller.model.options"></textarea>
+                </div>
 
-                    <label ng-hide="controller.model.type !== 'link'">
-                        <span>Link :</span>
-                        <textarea placeholder="Link til spørreundersøkelse" ng-model="controller.model.link"></textarea>
-                    </label>
+                <div class="input-group" ng-hide="controller.model.type !== 'link'">
+                    <span class="input-group-addon" style="width: 120px">Link :</span>
+                    <textarea class="form-control" placeholder="Link til spørreundersøkelse" ng-model="controller.model.link"></textarea>
                 </div>
             </div>
             <div class="row" style="margin-top: 20px">
