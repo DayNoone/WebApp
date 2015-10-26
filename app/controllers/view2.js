@@ -240,41 +240,11 @@ app.controller('view2', function($scope, $modal, $log, $http) {
                     fillOpacity: 0.2,
                     map: map,
                     center: event.latLng,
-                    radius: parseInt($scope.clickRadius)
-                });
-                google.maps.event.addListener(selectedArea, 'click', function (ev) {
-                    $scope.samePathArray.push(new google.maps.Circle({
-                        strokeColor: color,
-                        strokeOpacity: 0.8,
-                        strokeWeight: 2,
-                        fillColor: color,
-                        fillOpacity: 0.2,
-                        map: map,
-                        center: event.latLng,
-                        radius: parseInt($scope.clickRadius)
-                    }));
-                    //google.maps.event.clearInstanceListeners($scope.samePathArray[$scope.samePathArray.length-1]);
-                    google.maps.event.addListener($scope.samePathArray[$scope.samePathArray.length - 1], 'click', function (ev2) {
-                        //$scope.samePathArray.pop($scope.samePathArray.length-1).setMap(null);
-                        var i = 0;
-                        running = true;
-                        angular.forEach($scope.samePathArray, function (circle) {
-                            if (running) {
-                                console.log(ev2.latLng + "," + circle.radius + "," + circle.center)
-                                if (pointInCircle(ev2.latLng, circle.radius, circle.center)) {
-                                    circle.setMap(null);
-                                    $scope.samePathArray.splice(i, 1);
-                                    running = false;
-
-                                }
-                                i++;
-                            }
-                        });
-                    });
-                    $scope.hideFinishPathing = false;
+                    radius: parseInt($scope.clickRadius),
+                    clickable: false
                 });
             }
-        });
+        })
     }
 
 
@@ -653,6 +623,37 @@ app.controller('view2', function($scope, $modal, $log, $http) {
                 }
             } else if ($scope.enableSamePath) {
                 console.log("Clicked with enableSamePath")
+                    $scope.samePathArray.push(new google.maps.Circle({
+                        strokeColor: color,
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        fillColor: color,
+                        fillOpacity: 0.2,
+                        clickable: true,
+                        map: map,
+                        center: event.latLng,
+                        radius: parseInt($scope.clickRadius)
+                    }));
+                    //google.maps.event.clearInstanceListeners($scope.samePathArray[$scope.samePathArray.length-1]);
+                    google.maps.event.addListener($scope.samePathArray[$scope.samePathArray.length - 1], 'click', function (ev2) {
+                        //$scope.samePathArray.pop($scope.samePathArray.length-1).setMap(null);
+                        var i = 0;
+                        running = true;
+                        angular.forEach($scope.samePathArray, function (circle) {
+                            if (running) {
+                                console.log(ev2.latLng + "," + circle.radius + "," + circle.center)
+                                if (pointInCircle(ev2.latLng, circle.radius, circle.center)) {
+                                    circle.setMap(null);
+                                    $scope.samePathArray.splice(i, 1);
+                                    running = false;
+
+                                }
+                                i++;
+                            }
+                        });
+                    });
+                    $scope.hideFinishPathing = false;
+
             }
 
         });
