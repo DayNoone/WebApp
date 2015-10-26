@@ -235,7 +235,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             if (selectedArea != null) {
                 selectedArea.setMap(null);
             }
-            if ($scope.enableSamePath || $scope.enableTooltip) {
+            if ($scope.enableSamePath || $scope.enableTooltip || $scope.enableSurveyPoints) {
                 color = "#0008FF"
                 border = "#0008FF"
                 if($scope.enableTooltip) {
@@ -275,7 +275,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
 
     $scope.hideSurvey = function () {
         if($scope.surveyIcon){
-            document.getElementById('surveyBtn').className = "btn btn-primary";
+            document.getElementById('enableSurvey').className = "btn btn-primary";
         }
 
         return !$scope.surveyIcon;
@@ -615,6 +615,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     var selectedArea;
 
     $scope.enableSamePath = false;
+    $scope.enableSurveyPoints = false;
 
     var addClickListener = function () {
         google.maps.event.addListener(map, 'click', function (event) {
@@ -639,7 +640,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
                     $scope.openModal($scope.selectedCluster);
 
                 }
-            } else if ($scope.enableSamePath) {
+            } else if ($scope.enableSamePath || $scope.enableSurveyPoints) {
                 console.log("Clicked with enableSamePath")
                     $scope.samePathArray.push(new google.maps.Circle({
                         strokeColor: color,
@@ -742,6 +743,10 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             console.log(status);
         }, function () {
             selectedArea.setMap(null);
+            $scope.clearPaths();
+            while ($scope.samePathArray[0]) {  //Remove circles
+                $scope.samePathArray.pop().setMap(null);
+            }
             $log.info('Modal dismissed at: ' + new Date());
         });
     }
