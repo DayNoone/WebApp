@@ -111,6 +111,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     $scope.selectedHeatmap = function (itemId) {
         if ($scope.veifeilIcon) {
             $scope.currentlySelected = "";
+            $scope.enableTooltip = false;
             heatmap.setMap(null);
         }
         else {
@@ -230,10 +231,15 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             if (selectedArea != null) {
                 selectedArea.setMap(null);
             }
-            if ($scope.enableSamePath) {
+            if ($scope.enableSamePath || $scope.enableTooltip) {
                 color = "#0008FF"
+                border = "#0008FF"
+                if($scope.enableTooltip) {
+                    color = "#00FFEE"
+                    border = "#8000FF"
+                }
                 selectedArea = new google.maps.Circle({
-                    strokeColor: color,
+                    strokeColor: border,
                     strokeOpacity: 0.8,
                     strokeWeight: 2,
                     fillColor: color,
