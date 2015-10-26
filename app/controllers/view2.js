@@ -93,12 +93,16 @@ app.controller('view2', function($scope, $modal, $log, $http) {
 
     $scope.veifeilIcon = false;
     $scope.samePathIcon = false;
+    $scope.surveyIcon = false;
     $scope.isChecked = function (itemId) {
         if (itemId == 'Veifeil') {
             if ($scope.veifeilIcon)
                 return 'glyphicon glyphicon-ok-sign';
         } else if (itemId == 'samePath') {
             if ($scope.samePathIcon)
+                return 'glyphicon glyphicon-ok-sign';
+        }else if (itemId == 'surveys') {
+            if ($scope.surveyIcon)
                 return 'glyphicon glyphicon-ok-sign';
         }
         return false;
@@ -291,6 +295,14 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             document.getElementById('samePathBtn').className = "btn btn-primary";
         }
         return !$scope.samePathIcon;
+    }
+
+    $scope.hideSurvey = function () {
+        if($scope.surveyIcon){
+            document.getElementById('surveyBtn').className = "btn btn-primary";
+        }
+
+        return !$scope.surveyIcon;
     }
 
     $scope.drawnPath = [];
