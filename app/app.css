@@ -24,6 +24,16 @@ html, body {
   z-index: 0;
 }
 
+#loadingScreen {
+  top:60px;
+  height: 97%;
+  width: 100%;
+  z-index: 3;
+  position:fixed;
+  background: white;
+  opacity: 0.5;
+}
+
 .category_container{
   position: fixed;
   padding: 2em;
@@ -245,4 +255,31 @@ html, body {
 }
 .custom-Checkbox:checked {
   background: red;
+}
+
+#page-wrap{
+  margin: auto;
+  width: 400px;
+}
+
+.datePicker{
+  line-height:30px;
+  border-style: solid;
+  border-radius:  5px;
+  border-color: #CCCCCC;
+  border-width: 1px;
+}
+
+.b{
+  cursor: default;
+  color: black;
+  text-decoration: none;
+  padding-left: 1.5em;
+  width:200px;
+  padding: 1em;
+}
+
+.b:hover{
+  cursor:pointer;
+  color:white;
 }

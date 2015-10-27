@@ -1,59 +1,44 @@
 <div id="categories" ng-class="{false: 'slide_categories_inactive', true: 'slide_categories_active'}[categoryActive]" class="slide_categories_active category_container">
-
-    <legend>Kategorier</legend>
+    <legend>Kartdata</legend>
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingOne">
-                <h4 class="panel-title">
-                    <a role="button" data-toggle="collapse" data-parent="#accordion" ng-href="#collapseOne" target="_self" aria-expanded="true" aria-controls="collapseOne">
-                        Heat Maps
-                    </a>
-                </h4>
-            </div>
+
             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                 <div class="panel-body">
+                    <!--
                     <span data-ng-class="isChecked('speedVar')" aria-hidden="true" style="color:black;"></span>
                     <a id="speedVar" class="category_element" ng-click="selectedHeatmap('speedVar')">Fartsendring</a> <br>
                     <span data-ng-class="isChecked('popularity')" aria-hidden="true" style="color:black;"></span>
                     <a id="popularity" class="category_element" ng-click="selectedHeatmap('popularity')">Popularitet</a><br>
-                    <span data-ng-class="isChecked('Veifeil')" aria-hidden="true" style="color:black;"></span>
-                    <a id="Veifeil" class="category_element" ng-click="selectedHeatmap('Veifeil')">Veifeil</a><br>
+                    -->
+                    <span id="VeifeilIcon" data-ng-class="isChecked('Veifeil')" style="color:black;"></span>
+                        <a id="Veifeil" class="category_element" ng-click="selectedHeatmap('Veifeil'); veifeilIcon = !veifeilIcon">Veifeil</a><br>
+                    <span data-ng-class="isChecked('samePath')" style="color:black;"></span>
+                        <a id="samePath" class="category_element" ng-click="selectedLines('samePath'); samePathIcon = !samePathIcon">Velg rute</a><br>
                 </div>
             </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingTwo">
-                <h4 class="panel-title">
-                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" target="_self" aria-expanded="false" aria-controls="collapseTwo">
-                        Rute
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                <div class="panel-body">
-                    <span data-ng-class="isChecked('Popularitet')" aria-hidden="true" style="color:black;"></span>
-                        <a id="Popularitet" class="category_element" ng-click="selectedLines('Popularitet')">Popularitet</a><br>
-                    <span data-ng-class="isChecked('samePath')" aria-hidden="true" style="color:black;"></span>
-                        <a id="samePath" class="category_element" ng-click="selectedLines('samePath')">Velg rute</a><br>
-                </div>
-            </div>
-        </div>
+
     </div>
-    <div ng-hide="currentlySelected==''">
-            <legend>{{currentlySelected}}</legend>
-        <div id="veifeilView" ng-hide="currentlySelected != 'Heatmap Veifeil'">
-            <button id = "enableTooltip" type="button"  class="btn btn-success" data-toggle="button"  ng-click="enableTooltip = !enableTooltip">
+    <div>
+        <div id="veifeilView" ng-hide="hideHeatMap()" style="margin-bottom:2em">
+            <legend>Veifeil</legend>
+            <button id = "enableTooltip" type="button"  class="btn btn-primary" data-toggle="button"  ng-click="enableTooltip = !enableTooltip">
                 Klikkbare punkter
             </button>
         </div>
         <div id="samePathView" ng-hide="hideSamePathView()">
+            <legend>Ruter</legend>
             <div class="btn-group">
                 <button id = "samePathBtn" type="button"  class="btn btn-primary" data-toggle="button"  ng-click="enableSamePath = !enableSamePath">
                     Velg punkter i rute
                 </button>
-                <button id="finishSamePathBtn" type="button" class="btn btn-success" ng-hide="hideFinishPathing" ng-click="finishPathing()">Fullf�r</button>
+                <button id="finishSamePathBtn" type="button" class="btn btn-success" ng-click="finishPathing()">Fullfør</button>
             </div>
+            <button type="button" class="btn btn-primary" ng-click="openSurveyModal()">Lag undersøkelse til punkt(er)</button>
             <button type="button" class="btn btn-warning" ng-hide="drawnPath.length==0" ng-click="clearPaths()">Fjern ruter</button>
+            <!--<div style="margin-top: 20px;" ng-show="tabCtrl.isSet(0)" ng-controller="QuestionController as questionCtrl" ng-include="'modules/newquestion.html'"></div>-->
+            <button type="button" class="btn btn-info" ng-hide="drawnPath.length!=0" ng-click="samePath()">Vis turer</button>
         </div>
     </div>
 
@@ -67,21 +52,21 @@
     <input id="searchField" class="controls form-control" type="text" placeholder="Search locations" style="margin-bottom:1em">
     <div style="height:60px;">
         <div class="input-group">
-            <span class="input-group-addon">Fra: </span><input class="form-control" type="date" id="fromDate" ng-change="testChange()" ng-model="fromDate"/>
+            <span class="input-group-addon">Fra: </span><input class="form-control" type="date" id="fromDate" ng-change="filterData()" ng-model="fromDate"/>
         </div>
     </div>
 
     <div style="height:60px; margin-bottom: 1em">
         <div class="input-group">
-            <span class="input-group-addon">Til: </span><input class="form-control" type="date" id="toDate" ng-change="testChange()" ng-model="toDate"/>
+            <span class="input-group-addon">Til: </span><input class="form-control" type="date" id="toDate" ng-change="filterData()" ng-model="toDate"/>
         </div>
     </div>
 
     <div style="height:60px; margin-bottom: 1em">
         <div class="input-group">
             <span class="input-group-addon">Tidsrom: </span>
-            <input class="form-control" type="time" id="fromTime" ng-model="fromTime" ng-change="testChange()"/>
-            <input class="form-control" type="time" id="toTime" ng-model="toTime" ng-change="testChange()"/>
+            <input class="form-control" type="time" id="fromTime" ng-model="fromTime" ng-change="filterData()"/>
+            <input class="form-control" type="time" id="toTime" ng-model="toTime" ng-change="filterData()"/>
         </div>
     </div>
 
@@ -90,6 +75,7 @@
             <span class="input-group-addon">Klikkradius </span><input class="form-control" type="range" value = "50" max = "1000" min = "5" ng-model="clickRadius">
         </div>
     </div>
+
 
     <!--
     <div style="height:60px; margin-bottom: 1em">
@@ -100,7 +86,7 @@
 
     <button type="button" ng-click="changePointRadius()">Oppdater radius</button>
 -->
-    <button type="button" class="btn btn-warning" ng-click="resetFilter()">Nullstill</button>
+    <button type="button" class="btn btn-warning" ng-hide="true" ng-click="resetFilter()">Nullstill</button>
 
     <div id="gmaps_panel_button"  ng-click="gmaps_slide('gmaps_panel_button')"><span class="glyphicon" ng-class="{true: 'glyphicon-triangle-right', false: 'glyphicon-triangle-left'}[gmapsActive]" aria-hidden="true"></span></div>
 
@@ -112,3 +98,6 @@
 
 </div>
 
+<div id="loadingScreen" class="center-block" ng-if="!loadingFinished">
+    <img src="resources/ajax-loader.gif" style="top: 50%; left: 50%; position: absolute"/>
+</div>

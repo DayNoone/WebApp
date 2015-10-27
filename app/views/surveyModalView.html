@@ -1,0 +1,63 @@
+<div id="page-wrap">
+    <form  name="questionForm" novalidate>
+        <div style="margin: 2em" ng-hide="lineClicked" ng-animate="'slide'">
+            <legend>Spørreundersøkelse</legend>
+
+            <div class="row" style="margin-top: 20px">
+                    <div class="input-group col-md-12">
+                        <span class="input-group-addon" style="width: 120px">Tittel :</span>
+                        <input class="form-control" placeholder="Tittel til spørreundersøkelse" type="text" ng-model="controller.model.title" required>
+                    </div>
+            </div>
+
+            <div class="row" style="margin-top: 20px">
+                <div class="col-md-12 input-group">
+                    <span class="input-group-addon" style="width: 120px">Utløpsdato</span>
+                    <input type="date" ng-model="controller.model.expirationDate" class="form-control">
+                </div>
+                <div class="dropdown col-md-6 input-group" style="margin-top: 20px" >
+                    <span class="input-group-addon">Spørsmålstype</span>
+                    <button class="btn btn-default dropdown-toggle form-control" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        {{controller.model.type}}
+                        <span class="caret"></span>
+                        </button>
+
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" required style="margin-left:28px">
+                        <li><a class="b" value="dropdown" ng-click="controller.model.type = 'dropdown'">Dropdown</a></li>
+                        <li><a class="b" value="check" ng-click="controller.model.type = 'check'">Checkboxes</a></li>
+                        <li><a class="b" value="radio" ng-click="controller.model.type = 'radio'">Radio buttons</a></li>
+                        <li><a class="b" value="text" ng-click="controller.model.type = 'text'">Tekst</a></li>
+                        <li><a class="b" value="link" ng-click="controller.model.type = 'link'">Link</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div ng-hide="controller.model.type == 'link'" class="row" style="margin-top: 20px">
+                <div  class="input-group">
+                    <span class="input-group-addon" style="width: 140px">Spørsmål :</span>
+                    <textarea class="form-control" style="width:260px" placeholder="Spørsmål" ng-model="controller.model.question"></textarea>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 20px">
+                <div class="input-group" ng-hide="controller.model.type == 'text' || controller.model.type == 'link'">
+                    <span cass="input-group-addon" style="width: 120px">Options :</span>
+                    <textarea class="form-control" placeholder="Valg, en per linje" ng-model="controller.model.options"></textarea>
+                </div>
+
+                <div class="input-group" ng-hide="controller.model.type !== 'link'">
+                    <span class="input-group-addon" style="width: 120px">Link :</span>
+                    <textarea class="form-control" placeholder="Link til spørreundersøkelse" ng-model="controller.model.link"></textarea>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 20px">
+                <div class="col-md-12 centered">
+                    <label>
+                        <span>&nbsp;</span>
+                        <button class="btn btn-lg btn-primary btn-block" ng-click="save(controller.model)">Opprett</button>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
