@@ -1,5 +1,5 @@
 app.controller("surveyController", function($scope, $http, circles) {
-
+    $scope.responseText = true;
     var service_URL = "https://tf2.sintef.no:8084/smioTest/api/";
     var uid = "sondre";
     var pw = "dabchick402";
