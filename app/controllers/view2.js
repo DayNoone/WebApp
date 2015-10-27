@@ -296,6 +296,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
                 path: trip,
                 geodesic: true,
                 strokeColor: '#FF0000',
+                clickable: false,
                 strokeOpacity: .3,
                 strokeWeight: 2,
                 map: map
@@ -401,6 +402,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         pathArray = new google.maps.MVCArray(path);
         tripPath = new google.maps.Polyline({
             path: pathArray,
+            clickable: false,
             geodesic: true,
             strokeColor: '#FF0000',
             strokeOpacity: 1.0,
