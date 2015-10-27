@@ -4,7 +4,7 @@ app.controller("surveyController", function($scope, $http, circles) {
     var uid = "sondre";
     var pw = "dabchick402";
 
-    $scope.samePathArray = circles;
+    $scope.surveyPointArray = circles;
     console.log(circles[0].center.lat());
 
     $scope.controller = this;
@@ -107,6 +107,9 @@ app.controller("surveyController", function($scope, $http, circles) {
     //        var image = 'glyphicon glyphicon-ok-sign center-block'
     //        return image;
     //    }else return false;
+    //}
+    //$scope.closeModal = function() {
+    //    $('#product-options').modal('hide');
     //}
 
 });

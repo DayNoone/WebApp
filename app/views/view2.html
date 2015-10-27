@@ -12,9 +12,11 @@
                     <a id="popularity" class="category_element" ng-click="selectedHeatmap('popularity')">Popularitet</a><br>
                     -->
                     <span id="VeifeilIcon" data-ng-class="isChecked('Veifeil')" style="color:black;"></span>
-                        <a id="Veifeil" class="category_element" ng-click="selectedHeatmap('Veifeil'); veifeilIcon = !veifeilIcon">Veifeil</a><br>
+                        <a id="Veifeil" class="category_element" ng-click="selectedHeatmap('Veifeil'); veifeilIcon = !veifeilIcon">Rapporterte problemer</a><br>
                     <span data-ng-class="isChecked('samePath')" style="color:black;"></span>
                         <a id="samePath" class="category_element" ng-click="selectedLines('samePath'); samePathIcon = !samePathIcon">Velg rute</a><br>
+                    <span data-ng-class="isChecked('surveys')" style="color:black;"></span>
+                    <a id="surveys" class="category_element" ng-click="surveyIcon = !surveyIcon">Spørreundersøkelse</a><br>
                 </div>
             </div>
         </div>
@@ -23,22 +25,28 @@
     <div>
         <div id="veifeilView" ng-hide="hideHeatMap()" style="margin-bottom:2em">
             <legend>Veifeil</legend>
-            <button id = "enableTooltip" type="button"  class="btn btn-primary" data-toggle="button"  ng-click="enableTooltip = !enableTooltip">
+            <button id = "enableTooltip" type="button"  class="btn btn-primary" data-toggle="button"  ng-click="toggleButtons('enableTooltip')">
                 Klikkbare punkter
             </button>
         </div>
         <div id="samePathView" ng-hide="hideSamePathView()">
             <legend>Ruter</legend>
             <div class="btn-group">
-                <button id = "samePathBtn" type="button"  class="btn btn-primary" data-toggle="button"  ng-click="enableSamePath = !enableSamePath">
+                <button id = "samePathBtn" type="button"  class="btn btn-primary" data-toggle="button"  ng-click="toggleButtons('enableSamePath')">
                     Velg punkter i rute
                 </button>
                 <button id="finishSamePathBtn" type="button" class="btn btn-success" ng-click="finishPathing()">Fullfør</button>
             </div>
-            <button type="button" class="btn btn-primary" ng-click="openSurveyModal()">Lag undersøkelse til punkt(er)</button>
             <button type="button" class="btn btn-warning" ng-hide="drawnPath.length==0" ng-click="clearPaths()">Fjern ruter</button>
             <!--<div style="margin-top: 20px;" ng-show="tabCtrl.isSet(0)" ng-controller="QuestionController as questionCtrl" ng-include="'modules/newquestion.html'"></div>-->
-            <button type="button" class="btn btn-info" ng-hide="drawnPath.length!=0" ng-click="samePath()">Vis turer</button>
+            <button type="button" class="btn btn-info" ng-hide="drawnPath.length!=0" ng-click="samePath()">Vis alle turer</button>
+        </div>
+        <div id="surveyView" ng-hide="hideSurvey()" style="margin-bottom:2em">
+            <legend>Spørreunderøkelse</legend>
+            <button id = "enableSurvey" type="button"  class="btn btn-primary" data-toggle="button"  ng-click="toggleButtons('enableSurveyPoints')">
+                Legg til spørrepunkter
+            </button>
+            <button type="button" class="btn btn-success" ng-click="openSurveyModal()">Lag undersøkelse til punkt(er)</button>
         </div>
     </div>
 
@@ -49,7 +57,7 @@
 
 <div id="gmaps_panel" ng-class="{false: 'slide_gmaps_inactive', true: 'slide_gmaps_active'}[gmapsActive]" class="slide_gmaps_active category_container">
     <legend>Filtre</legend>
-    <input id="searchField" class="controls form-control" type="text" placeholder="Search locations" style="margin-bottom:1em">
+    <input id="searchField" class="controls form-control" type="text" placeholder="Søk etter sted" style="margin-bottom:1em">
     <div style="height:60px;">
         <div class="input-group">
             <span class="input-group-addon">Fra: </span><input class="form-control" type="date" id="fromDate" ng-change="filterData()" ng-model="fromDate"/>
@@ -72,7 +80,7 @@
 
     <div style="height:60px; margin-bottom: 1em">
         <div class="input-group">
-            <span class="input-group-addon">Klikkradius </span><input class="form-control" type="range" value = "50" max = "1000" min = "5" ng-model="clickRadius">
+            <span class="input-group-addon">Klikkstørrelse </span><input class="form-control" type="range" value = "50" max = "1000" min = "5" ng-model="clickRadius">
         </div>
     </div>
 
