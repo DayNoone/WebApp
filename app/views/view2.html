@@ -16,7 +16,9 @@
                     <span data-ng-class="isChecked('samePath')" style="color:black;"></span>
                         <a id="samePath" class="category_element" ng-click="selectedLines('samePath'); samePathIcon = !samePathIcon">Velg rute</a><br>
                     <span data-ng-class="isChecked('surveys')" style="color:black;"></span>
-                    <a id="surveys" class="category_element" ng-click="surveyIcon = !surveyIcon">Spørreundersøkelse</a><br>
+                        <a id="surveys" class="category_element" ng-click="surveyIcon = !surveyIcon">Spørreundersøkelse</a><br>
+                    <span data-ng-class="isChecked('speedVar')" style="color:black;"></span>
+                    <a id="speedVar" class="category_element" ng-click="selectedLines('speedVar'); speedVarIcon = !speedVarIcon">Fartsendring</a><br>
                 </div>
             </div>
         </div>
@@ -50,6 +52,17 @@
             </button>
             <div  style="padding-bottom: 10px; padding-top: 5px;">Posisjoner der forbipasserende vil bli spurt om å svare på spørreundersøkelse</div>
             <button type="button" class="btn btn-success" ng-click="openSurveyModal()">Lag undersøkelse til punkt(er)</button>
+        </div>
+        <div id="speedVarView" ng-hide="hideSpeedVarView()">
+            <legend>Fartsendring</legend>
+            <div class="input-group">
+                <span class="input-group-addon">Opacity </span><input class="form-control" type="range" value = "50" max = "100" min = "0" ng-model="speedVarOpacity">
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon">Grense </span><input class="form-control" type="number" value = "5" max = "30" min = "2" ng-model="maxSpeed">
+            </div>
+            <btn id="opacityBtn" class="btn btn-success" ng-click="loadSpeedVar()" style="margin-top: 2em">Reload</btn>
+
         </div>
     </div>
 
@@ -109,6 +122,9 @@
 
 </div>
 
-<div id="loadingScreen" class="center-block" ng-if="!loadingFinished">
-    <img src="resources/ajax-loader.gif" style="top: 50%; left: 50%; position: absolute"/>
+<div id="loadingScreen" class="center-block" ng-hide="loadingFinished">
+    <div style="top: 50%; left: 50%; position: absolute">
+        <img src="resources/ajax-loader.gif"/>
+        <span style="margin-left: 1em">Laster, vennligst vent.</span>
+    </div>
 </div>

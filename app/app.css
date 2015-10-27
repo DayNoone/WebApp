@@ -283,3 +283,7 @@ html, body {
   cursor:pointer;
   color:white;
 }
+
+.gradient {
+  background: -webkit-linear-gradient(left, red, yellow, green);
+}

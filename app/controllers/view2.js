@@ -1,4 +1,4 @@
-app.controller('view2', function($scope, $modal, $log, $http) {
+app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
     $scope.loadingFinished = false;
     $scope.categoryActive = true
     $scope.categories_slide = function () {
@@ -94,6 +94,8 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     $scope.veifeilIcon = false;
     $scope.samePathIcon = false;
     $scope.surveyIcon = false;
+    $scope.speedVarIcon = false;
+
     $scope.isChecked = function (itemId) {
         if (itemId == 'Veifeil') {
             if ($scope.veifeilIcon)
@@ -103,6 +105,9 @@ app.controller('view2', function($scope, $modal, $log, $http) {
                 return 'glyphicon glyphicon-ok-sign';
         }else if (itemId == 'surveys') {
             if ($scope.surveyIcon)
+                return 'glyphicon glyphicon-ok-sign';
+        }else if (itemId == 'speedVar') {
+            if ($scope.speedVarIcon)
                 return 'glyphicon glyphicon-ok-sign';
         }
         return false;
@@ -145,11 +150,15 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         togglePath();
         if ($scope.samePathIcon) {
             $scope.currentlySelected = "";
+            //TODO: Disable all enabled buttons in corresponding view
+        } else if($scope.speedVarIcon){
+            $scope.currentlySelected = "";
+            //TODO: Disable all enabled buttons in corresponding view
         } else {
             $scope.currentlySelected = "Rute " + itemId;
             switch (itemId) {
-                case "Popularitet":
-
+                case "speedVar":
+                    $scope.loadSpeedVar();
                     break;
                 case "samePath":
                     $scope.samePath();
@@ -157,6 +166,90 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             }
 
         }
+    }
+
+
+    /** Hex is on format: #rrggbb, and this method converts the integers to hex and returns a color code
+     *  VERY IMPORTANT
+     *  Arguments MUST be integers.
+     *  There are no floats in an rgb color.
+     *
+     * @param cR
+     * @param cG
+     * @param cB
+     * @returns {string}
+     */
+    function toHex(cR, cG, cB) {
+        hexR = cR.toString(16);
+        r =  hexR.length == 1 ? "0" + hexR : hexR;
+        hexG = cG.toString(16);
+        g =  hexG.length == 1 ? "0" + hexG : hexG;
+        hexB = cB.toString(16);
+        b =  hexB.length == 1 ? "0" + hexB : hexB;
+        return "#"+r+g+b;
+    }
+
+    /**Takes in a speed as decimal wich determines the color
+     * The higheset speed is decided by user input
+     *
+     * @param speed
+     * @returns {a color of type "#" + hexnum}
+     */
+    function colorBySpeed(speed){
+        r = 255;
+        g = 0;
+        b = 0;
+        // 255,0,0 == 0/maxSpeed
+        // 255,255,0 == 0.5*maxSpeed/maxSpeed
+        // 0,255,0 = maxSpeed/maxSpeed
+
+        if(speed >= $scope.maxSpeed){return toHex(0,255,0)}//supergreen
+        else if(speed >= 0.5*$scope.maxSpeed){ // change red channel
+            return toHex(parseInt(255*2-255*2*(speed/$scope.maxSpeed)),255,0);
+        }
+        else if(speed < 0.5*$scope.maxSpeed){  //change green channel
+            return toHex(255,parseInt(255*(2*speed/$scope.maxSpeed)),0);
+        }
+        else{
+            return "#FF000";
+        }
+    }
+
+    $scope.loadSpeedVar = function() {
+        $scope.loadingFinished = false;
+        $scope.clearPaths();
+        $timeout(function() {
+        calculateSpeedVariation();
+        $scope.loadingFinished = true;
+        }, 10);
+    }
+
+    function calculateSpeedVariation(){
+        var curr;
+        var prev;
+        angular.forEach(trips, function(trip){
+            curr = null;
+            prev = null;;
+            if (inInterval(dateComparify(trip.startTime), timeComparify(trip.startTime))) {
+                angular.forEach(trip.tripData, function (point) {
+                    curr = new google.maps.LatLng(point.lat, point.lon);
+                    if (prev != null) {
+                        strokeColor = colorBySpeed(point.speed);
+                        $scope.drawnPath.push(new google.maps.Polyline({
+                            path: [prev, curr],
+                            geodesic: true,
+                            strokeColor: strokeColor,
+                            clickable: false,
+                            strokeOpacity: $scope.speedVarOpacity/100,
+                            strokeWeight: 2,
+                            map: map
+                        }));
+                    }
+                    prev = curr;
+                })
+            }
+        })
+        $scope.loadingFinished = true;
     }
 
     function calculatePath() {
@@ -201,6 +294,10 @@ app.controller('view2', function($scope, $modal, $log, $http) {
 
     $scope.samePathArray = [];
     $scope.surveyPointArray = [];
+
+    $scope.speedVarOpacity = 50;
+    $scope.maxSpeed = 5;
+
 
     var errors;
     var activeJSONData;
@@ -285,17 +382,25 @@ app.controller('view2', function($scope, $modal, $log, $http) {
 
         return !$scope.surveyIcon;
     }
+    $scope.hideSpeedVarView = function() {
+        if ($scope.speedVarIcon) {
+            //$scope.enableSamePath = false;
+        }
+        return !$scope.speedVarIcon;
+    }
 
     $scope.drawnPath = [];
     var samePathPartArray = [];
 
-    function drawPaths(pathArr) {
+    function drawPaths(pathArr, strokeColor) {
+        if(strokeColor==null)
+            strokeColor = '#FF0000';
         console.log("Drawing path");
         angular.forEach(pathArr, function (trip) {
             $scope.drawnPath.push(new google.maps.Polyline({
                 path: trip,
                 geodesic: true,
-                strokeColor: '#FF0000',
+                strokeColor: strokeColor,
                 clickable: false,
                 strokeOpacity: .3,
                 strokeWeight: 2,
@@ -410,19 +515,8 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         });
     }
 
-    function getPoints(dummyData) {
-        dataPoints = [];
-        activeJSONData = [];
-        var i = 0;
-        angular.forEach(dummyData, function (data) {
-            if (inInterval(dateComparify(data.Date), data.Time.replace(/:/g, ''))) {
-                dataPoints[i] = new google.maps.LatLng(data.Latitude, data.Longitude);
-                activeJSONData[i] = data;
-                i++;
-            }
-        })
-        console.log(dataPoints.length);
-        return dataPoints;
+    function getPoints() {
+        console.log("getPoints");
     };
 
     function getFaultPoints() {
@@ -479,6 +573,10 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         if ($scope.veifeilIcon) {
             pointArray = getFaultPoints();
             heatmap.setData(pointArray);
+        }
+        if($scope.speedVarIcon){
+            $scope.clearPaths();
+            calculateSpeedVariation();
         }
     }
 
@@ -803,6 +901,8 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     }
 
     function connect() {
+        var connectionsResolved = 0;
+
         var service_URL = "https://tf2.sintef.no:8084/smioTest/api/";
 
         var uid = "sondre";
@@ -821,19 +921,28 @@ app.controller('view2', function($scope, $modal, $log, $http) {
                 token = data['token']
                 $http.get(service_URL + 'trips', {params: {uid: userid, token: token}}).
                     success(function (data) {
-                        console.log('Loaded');
+                        console.log('Loaded trips');
                         //console.log(data)
                         trips = data;
+                        connectionsResolved++;
+                        if(connectionsResolved == 2){
+                            console.log("Resolved")
+                            $scope.loadingFinished = true;
+                        }
                     }).
                     error(function () {
                         console.log('GET trips failed');
                     });
                 $http.get(service_URL + 'errors', {params: {uid: userid, token: token}}).
                     success(function (data) {
-                        console.log('Loaded');
+                        console.log('Loaded errors');
                         //console.log(data)
                         errors = data;
-                        $scope.loadingFinished = true;
+                        connectionsResolved++;
+                        if(connectionsResolved == 2){
+                            console.log("Resolved")
+                            $scope.loadingFinished = true;
+                        }
                     }).
                     error(function () {
                         console.log('GET error failed');
@@ -841,7 +950,5 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             }).error(function () {
                 console.log("POST failed");
             });
-
-
     }
 })
