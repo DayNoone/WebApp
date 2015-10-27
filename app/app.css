@@ -19,6 +19,14 @@ html, body {
   right: 0px;
   left:0px
 }
+.page_container {
+  margin-left: 15%;
+  margin-right: 15%;
+}
+.page_container .padding_container {
+  padding-left: 20px;
+  padding-right: 20px;
+}
 #map {
   height: 100%;
   z-index: 0;
