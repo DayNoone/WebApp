@@ -218,22 +218,37 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
     $scope.loadSpeedVar = function() {
         $scope.loadingFinished = false;
         $scope.clearPaths();
+        heatmap.setMap(null);
         $timeout(function() {
         calculateSpeedVariation();
+            if($scope.speedAsHeatmap){
+                heatmap.setData(heatmapPoitns);
+                heatmap.setMap(map);
+            }
         $scope.loadingFinished = true;
         }, 10);
     }
 
     function calculateSpeedVariation(){
+        console.log($scope.speedAsHeatmap);
         var curr;
         var prev;
+        var currP;
+        var prevP;
+        var prePrevP;
+        heatmapPoitns = [];
         angular.forEach(trips, function(trip){
             curr = null;
             prev = null;;
+            currP = null;
+            prevP = null;
+            prePrevP = null;
+            var intervalCounter = 1;
             if (inInterval(dateComparify(trip.startTime), timeComparify(trip.startTime))) {
                 angular.forEach(trip.tripData, function (point) {
+                    currP = point;
                     curr = new google.maps.LatLng(point.lat, point.lon);
-                    if (prev != null) {
+                    if ((prev != null) && !$scope.speedAsHeatmap){
                         strokeColor = colorBySpeed(point.speed);
                         $scope.drawnPath.push(new google.maps.Polyline({
                             path: [prev, curr],
@@ -244,8 +259,21 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
                             strokeWeight: 2,
                             map: map
                         }));
+                    }else if((prePrevP != null) && $scope.speedAsHeatmap && intervalCounter == 3){
+                        if(prePrevP.speed == null || prevP.speed == null || currP.speed == null){
+                            //Points without any speed defined
+                        }
+                        avgSpeed = (prePrevP.speed + prevP.speed + currP.speed)/3;
+                        if(avgSpeed != null && avgSpeed < $scope.maxSpeed/2 ){
+                            heatmapPoitns.push(curr);
+                        }
+                        intervalCounter = 0;
                     }
+                    prePrevP = prevP;
+                    prevP = currP;
+
                     prev = curr;
+                    intervalCounter++;
                 })
             }
         })
@@ -297,6 +325,7 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
 
     $scope.speedVarOpacity = 50;
     $scope.maxSpeed = 5;
+    $scope.speedAsHeatmap = false;
 
 
     var errors;

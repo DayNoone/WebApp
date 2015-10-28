@@ -55,6 +55,17 @@
         </div>
         <div id="speedVarView" ng-hide="hideSpeedVarView()">
             <legend>Fartsendring</legend>
+            <div class="form group">
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-primary"  ng-click="speedAsHeatmap = true">
+                        <input type="radio" id="heatmapR" value="Heatmap"/>Heatmap
+                    </label>
+                    <label class="btn btn-primary active" ng-click="speedAsHeatmap = false">
+                        <input type="radio" id="routeR" value="route"/>Rute
+                    </label>
+                </div>
+            </div>
+            <span>Bytt mellom Heatmap og Rute</span><br>
             <div class="input-group">
                 <span class="input-group-addon">Opacity </span><input class="form-control" type="range" value = "50" max = "100" min = "0" ng-model="speedVarOpacity">
             </div>
