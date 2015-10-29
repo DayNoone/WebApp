@@ -282,6 +282,7 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
 
     function calculatePath() {
         path = [];
+        pathId = [];
         console.log(trips);
         angular.forEach(trips, function (trip) {
             points = [];
@@ -292,6 +293,7 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
             }
             if (points.length > 0) {
                 path.push(points);
+            pathId.push(trip._id);
             }
         });
         console.log(path);
@@ -327,7 +329,7 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
     $scope.maxSpeed = 5;
     $scope.speedAsHeatmap = false;
 
-
+    var pathId;
     var errors;
     var activeJSONData;
     var heatmapPoitns;
@@ -424,17 +426,32 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
     function drawPaths(pathArr, strokeColor) {
         if(strokeColor==null)
             strokeColor = '#FF0000';
-        console.log("Drawing path");
+        var index = 0;
         angular.forEach(pathArr, function (trip) {
-            $scope.drawnPath.push(new google.maps.Polyline({
+           var line = new google.maps.Polyline({
                 path: trip,
+                id: pathId[index],
                 geodesic: true,
                 strokeColor: strokeColor,
-                clickable: false,
+                clickable: true,
                 strokeOpacity: .3,
                 strokeWeight: 2,
                 map: map
-            }));
+            });
+
+            // Remove polyline from map.
+            var tmp = google.maps.event.addListener(line, 'click', function (event) {
+                if(event.Gb.ctrlKey) {
+                    angular.forEach($scope.drawnPath, function (path) {
+                        if (path.id == tmp.id) {
+                            path.setMap(null);
+                        }
+                    })
+                }
+            });
+            tmp.id=pathId[index];
+            $scope.drawnPath.push(line);
+            index++;
             //  $scope.drawnPath[$scope.drawnPath.length-1].setMap(map); // replaced with map:map
         });
     }
@@ -451,6 +468,7 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         if ($scope.hideFinishPathing) return;
         $scope.clearPaths();
         $scope.enableSamePath = false;
+        var arrayId = [];
         document.getElementById('samePathBtn').className = "btn btn-primary";
         if ($scope.samePathArray.length == 0) {
             return;
@@ -501,10 +519,9 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
 
          */
         //selectedArea.setMap(null);
-        if (samePathPartArray)
-            drawPaths(samePathPartArray);
-
+        drawPaths(samePathPartArray);
         $scope.hideFinishPathing = true;
+        console.log(trips);
     }
 
     $scope.hideFinishPathing = true;
