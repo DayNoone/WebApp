@@ -34,7 +34,7 @@ app.controller("surveyController", function($scope, $http, circles) {
             return;
         }
 
-        if(question.type !== 'text'){
+        if(question.type !== 'text' && question.type !== 'link'){
             if(!question.options || question.options.split('\n').length < 2){
                 console.log("Please enter at least two options (one option per line) for this question type.");
                 return;
@@ -49,6 +49,7 @@ app.controller("surveyController", function($scope, $http, circles) {
             expirationTimestamp: question.expirationDate,
             title: question.title,
             type: question.type,
+            question: question.question,
             alternatives: question.options && question.type !== 'text' ? question.options.split('\n') : [],
             userIds: question.userIds? question.userIds.split(',') : [],
             anonymous: question.anonymous ? true : false,
