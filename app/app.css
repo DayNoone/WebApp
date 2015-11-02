@@ -291,3 +291,34 @@ html, body {
   cursor:pointer;
   color:white;
 }
+
+.gradient {
+  background: -webkit-linear-gradient(left, red, yellow, green);
+}
+
+.animate-hide{
+  transition: 0.5s linear all;
+  height: 220px;
+  overflow: hidden;
+}
+.animate-hide.ng-hide{
+  height:0px;
+  opacity: 0;
+}
+
+.modalExitBtn {
+  float:right;
+  margin-top: 1em;
+  margin-right:1em;
+  padding: 1em;
+  padding-top: 0em;
+  padding-bottom: 0em;
+  font-size: 14pt;
+  color:lightgrey;
+  transition: background-color, 0.5s ease;
+}
+.modalExitBtn:hover {
+  background-color:indianred;
+  color:white;
+  cursor:pointer;
+}

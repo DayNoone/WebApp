@@ -1,4 +1,4 @@
-app.controller('view2', function($scope, $modal, $log, $http) {
+app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
     $scope.loadingFinished = false;
     $scope.categoryActive = true
     $scope.categories_slide = function () {
@@ -94,6 +94,8 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     $scope.veifeilIcon = false;
     $scope.samePathIcon = false;
     $scope.surveyIcon = false;
+    $scope.speedVarIcon = false;
+
     $scope.isChecked = function (itemId) {
         if (itemId == 'Veifeil') {
             if ($scope.veifeilIcon)
@@ -104,12 +106,20 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         }else if (itemId == 'surveys') {
             if ($scope.surveyIcon)
                 return 'glyphicon glyphicon-ok-sign';
+        }else if (itemId == 'speedVar') {
+            if ($scope.speedVarIcon)
+                return 'glyphicon glyphicon-ok-sign';
         }
         return false;
     }
 
     function cleanHeatMap() {
         //heatmap.setMap(null);
+    }
+
+    $scope.changeIntensity = function(){
+        console.log("CHANGE INTENSITY: " + $scope.intensity);
+        heatmap.set('maxIntensity',$scope.maxIntensity+1- $scope.intensity)
     }
 
     $scope.selectedHeatmap = function (itemId) {
@@ -145,11 +155,15 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         togglePath();
         if ($scope.samePathIcon) {
             $scope.currentlySelected = "";
+            //TODO: Disable all enabled buttons in corresponding view
+        } else if($scope.speedVarIcon){
+            $scope.currentlySelected = "";
+            //TODO: Disable all enabled buttons in corresponding view
         } else {
             $scope.currentlySelected = "Rute " + itemId;
             switch (itemId) {
-                case "Popularitet":
-
+                case "speedVar":
+                    $scope.loadSpeedVar();
                     break;
                 case "samePath":
                     $scope.samePath();
@@ -159,8 +173,121 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         }
     }
 
+
+    /** Hex is on format: #rrggbb, and this method converts the integers to hex and returns a color code
+     *  VERY IMPORTANT
+     *  Arguments MUST be integers.
+     *  There are no floats in an rgb color.
+     *
+     * @param cR
+     * @param cG
+     * @param cB
+     * @returns {string}
+     */
+    function toHex(cR, cG, cB) {
+        hexR = cR.toString(16);
+        r =  hexR.length == 1 ? "0" + hexR : hexR;
+        hexG = cG.toString(16);
+        g =  hexG.length == 1 ? "0" + hexG : hexG;
+        hexB = cB.toString(16);
+        b =  hexB.length == 1 ? "0" + hexB : hexB;
+        return "#"+r+g+b;
+    }
+
+    /**Takes in a speed as decimal wich determines the color
+     * The higheset speed is decided by user input
+     *
+     * @param speed
+     * @returns {a color of type "#" + hexnum}
+     */
+    function colorBySpeed(speed){
+        r = 255;
+        g = 0;
+        b = 0;
+        // 255,0,0 == 0/maxSpeed
+        // 255,255,0 == 0.5*maxSpeed/maxSpeed
+        // 0,255,0 = maxSpeed/maxSpeed
+
+        if(speed >= $scope.maxSpeed){return toHex(0,255,0)}//supergreen
+        else if(speed >= 0.5*$scope.maxSpeed){ // change red channel
+            return toHex(parseInt(255*2-255*2*(speed/$scope.maxSpeed)),255,0);
+        }
+        else if(speed < 0.5*$scope.maxSpeed){  //change green channel
+            return toHex(255,parseInt(255*(2*speed/$scope.maxSpeed)),0);
+        }
+        else{
+            return "#FF000";
+        }
+    }
+
+    $scope.loadSpeedVar = function() {
+        $scope.loadingFinished = false;
+        $scope.clearPaths();
+        heatmap.setMap(null);
+        $timeout(function() {
+        calculateSpeedVariation();
+            if($scope.speedAsHeatmap){
+                heatmap.setData(heatmapPoitns);
+                heatmap.setMap(map);
+            }
+        $scope.loadingFinished = true;
+        }, 10);
+    }
+
+    function calculateSpeedVariation(){
+        console.log($scope.speedAsHeatmap);
+        var curr;
+        var prev;
+        var currP;
+        var prevP;
+        var prePrevP;
+        heatmapPoitns = [];
+        angular.forEach(trips, function(trip){
+            curr = null;
+            prev = null;;
+            currP = null;
+            prevP = null;
+            prePrevP = null;
+            var intervalCounter = 1;
+            if (inInterval(dateComparify(trip.startTime), timeComparify(trip.startTime))) {
+                angular.forEach(trip.tripData, function (point) {
+                    currP = point;
+                    curr = new google.maps.LatLng(point.lat, point.lon);
+                    if ((prev != null) && !$scope.speedAsHeatmap){
+                        strokeColor = colorBySpeed(point.speed);
+                        $scope.drawnPath.push(new google.maps.Polyline({
+                            path: [prev, curr],
+                            geodesic: true,
+                            strokeColor: strokeColor,
+                            clickable: false,
+                            strokeOpacity: $scope.speedVarOpacity/100,
+                            strokeWeight: 2,
+                            map: map
+                        }));
+                    }else if((prePrevP != null) && $scope.speedAsHeatmap && intervalCounter == 3){
+                        if(prePrevP.speed == null || prevP.speed == null || currP.speed == null){
+                            //Points without any speed defined
+                        }
+                        avgSpeed = (prePrevP.speed + prevP.speed + currP.speed)/3;
+                        if(avgSpeed != null && avgSpeed < $scope.maxSpeed/2 ){
+                            heatmapPoitns.push(curr);
+                        }
+                        intervalCounter = 0;
+                    }
+                    prePrevP = prevP;
+                    prevP = currP;
+
+                    prev = curr;
+                    intervalCounter++;
+                })
+            }
+        })
+        $scope.loadingFinished = true;
+    }
+
     function calculatePath() {
         path = [];
+        pathId = [];
         console.log(trips);
         angular.forEach(trips, function (trip) {
             points = [];
@@ -171,6 +298,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             }
             if (points.length > 0) {
                 path.push(points);
+            pathId.push(trip._id);
             }
         });
         console.log(path);
@@ -186,6 +314,8 @@ app.controller('view2', function($scope, $modal, $log, $http) {
 
     $scope.pointRadius = 20;
     $scope.clickRadius = 50;
+    $scope.intensity = 5;
+    $scope.maxIntensity = 20;
 
     $scope.fromDate = "";
     $scope.toDate = "";
@@ -202,6 +332,11 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     $scope.samePathArray = [];
     $scope.surveyPointArray = [];
 
+    $scope.speedVarOpacity = 50;
+    $scope.maxSpeed = 5;
+    $scope.speedAsHeatmap = false;
+
+    var pathId;
     var errors;
     var activeJSONData;
     var heatmapPoitns;
@@ -216,6 +351,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         try {
             heatmap = new google.maps.visualization.HeatmapLayer({
                 data: pointArray,
+                maxIntensity: $scope.intensity,
                 map: map
             });
             heatmap.set('radius', heatmap.get('radius') ? null : $scope.pointRadius);
@@ -285,21 +421,45 @@ app.controller('view2', function($scope, $modal, $log, $http) {
 
         return !$scope.surveyIcon;
     }
+    $scope.hideSpeedVarView = function() {
+        if ($scope.speedVarIcon) {
+            //$scope.enableSamePath = false;
+        }
+        return !$scope.speedVarIcon;
+    }
 
     $scope.drawnPath = [];
     var samePathPartArray = [];
 
-    function drawPaths(pathArr) {
-        console.log("Drawing path");
+    function drawPaths(pathArr, strokeColor) {
+        if(strokeColor==null)
+            strokeColor = '#FF0000';
+        var index = 0;
         angular.forEach(pathArr, function (trip) {
-            $scope.drawnPath.push(new google.maps.Polyline({
+           var line = new google.maps.Polyline({
                 path: trip,
+                id: pathId[index],
                 geodesic: true,
-                strokeColor: '#FF0000',
+                strokeColor: strokeColor,
+                clickable: true,
                 strokeOpacity: .3,
                 strokeWeight: 2,
                 map: map
-            }));
+            });
+
+            // Remove polyline from map.
+            var tmp = google.maps.event.addListener(line, 'click', function (event) {
+                if(event.Gb.ctrlKey) {
+                    angular.forEach($scope.drawnPath, function (path) {
+                        if (path.id == tmp.id) {
+                            path.setMap(null);
+                        }
+                    })
+                }
+            });
+            tmp.id=pathId[index];
+            $scope.drawnPath.push(line);
+            index++;
             //  $scope.drawnPath[$scope.drawnPath.length-1].setMap(map); // replaced with map:map
         });
     }
@@ -316,6 +476,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         if ($scope.hideFinishPathing) return;
         $scope.clearPaths();
         $scope.enableSamePath = false;
+        var arrayId = [];
         document.getElementById('samePathBtn').className = "btn btn-primary";
         if ($scope.samePathArray.length == 0) {
             return;
@@ -366,10 +527,9 @@ app.controller('view2', function($scope, $modal, $log, $http) {
 
          */
         //selectedArea.setMap(null);
-        if (samePathPartArray)
-            drawPaths(samePathPartArray);
-
+        drawPaths(samePathPartArray);
         $scope.hideFinishPathing = true;
+        console.log(trips);
     }
 
     $scope.hideFinishPathing = true;
@@ -401,6 +561,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         pathArray = new google.maps.MVCArray(path);
         tripPath = new google.maps.Polyline({
             path: pathArray,
+            clickable: false,
             geodesic: true,
             strokeColor: '#FF0000',
             strokeOpacity: 1.0,
@@ -408,19 +569,8 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         });
     }
 
-    function getPoints(dummyData) {
-        dataPoints = [];
-        activeJSONData = [];
-        var i = 0;
-        angular.forEach(dummyData, function (data) {
-            if (inInterval(dateComparify(data.Date), data.Time.replace(/:/g, ''))) {
-                dataPoints[i] = new google.maps.LatLng(data.Latitude, data.Longitude);
-                activeJSONData[i] = data;
-                i++;
-            }
-        })
-        console.log(dataPoints.length);
-        return dataPoints;
+    function getPoints() {
+        console.log("getPoints");
     };
 
     function getFaultPoints() {
@@ -477,6 +627,10 @@ app.controller('view2', function($scope, $modal, $log, $http) {
         if ($scope.veifeilIcon) {
             pointArray = getFaultPoints();
             heatmap.setData(pointArray);
+        }
+        if($scope.speedVarIcon){
+            $scope.clearPaths();
+            calculateSpeedVariation();
         }
     }
 
@@ -602,8 +756,8 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     // END OF GOOGLE DEVELOPER CODE
 
     $scope.changePointRadius = function () {
-        radius = $scope.pointRadius;
-        heatmap.set('radius', radius);
+        console.log($scope.pointRadius);
+        heatmap.set('radius', parseInt($scope.pointRadius));
     }
 
     $scope.resetFilter = function () {
@@ -784,6 +938,7 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             controller: 'surveyController',
             size: 'lg',
             resolve: {
+
                 circles: function () {
                     return $scope.surveyPointArray;
                 }
@@ -801,6 +956,8 @@ app.controller('view2', function($scope, $modal, $log, $http) {
     }
 
     function connect() {
+        var connectionsResolved = 0;
+
         var service_URL = "https://tf2.sintef.no:8084/smioTest/api/";
 
         var uid = "sondre";
@@ -819,19 +976,28 @@ app.controller('view2', function($scope, $modal, $log, $http) {
                 token = data['token']
                 $http.get(service_URL + 'trips', {params: {uid: userid, token: token}}).
                     success(function (data) {
-                        console.log('Loaded');
+                        console.log('Loaded trips');
                         //console.log(data)
                         trips = data;
+                        connectionsResolved++;
+                        if(connectionsResolved == 2){
+                            console.log("Resolved")
+                            $scope.loadingFinished = true;
+                        }
                     }).
                     error(function () {
                         console.log('GET trips failed');
                     });
                 $http.get(service_URL + 'errors', {params: {uid: userid, token: token}}).
                     success(function (data) {
-                        console.log('Loaded');
+                        console.log('Loaded errors');
                         //console.log(data)
                         errors = data;
-                        $scope.loadingFinished = true;
+                        connectionsResolved++;
+                        if(connectionsResolved == 2){
+                            console.log("Resolved")
+                            $scope.loadingFinished = true;
+                        }
                     }).
                     error(function () {
                         console.log('GET error failed');
@@ -839,7 +1005,5 @@ app.controller('view2', function($scope, $modal, $log, $http) {
             }).error(function () {
                 console.log("POST failed");
             });
-
-
     }
 })

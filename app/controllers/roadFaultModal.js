@@ -1,4 +1,4 @@
-app.controller("roadFaults", function ($scope, obj) {
+app.controller("roadFaults", function ($scope,$modalInstance, obj) {
     $scope.selectedCluster = obj;
     console.log(obj);
 
@@ -7,6 +7,7 @@ app.controller("roadFaults", function ($scope, obj) {
     $scope.image = new Image();
 
     $scope.setError = function (error) {
+        if(error.description.length < 5) {error.desscription = "Ingen beskrivelse tilgjengelig"}
         $scope.error = error;
         $scope.image.src = 'data:image/png;base64,' + error.image;
         if ($scope.image.src == "data:image/png;base64,undefined") {
@@ -27,9 +28,12 @@ app.controller("roadFaults", function ($scope, obj) {
 
     $scope.hasImage = function (error) {
         if (error.image != null) {
-            var image = 'glyphicon glyphicon-ok-sign center-block'
+            var image = 'glyphicon glyphicon-ok-sign'
             return image;
         } else return false;
     }
 
+    $scope.close = function() {
+        $modalInstance.dismiss('cancel')
+    }
 });
