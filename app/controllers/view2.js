@@ -938,6 +938,7 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
             controller: 'surveyController',
             size: 'lg',
             resolve: {
+
                 circles: function () {
                     return $scope.surveyPointArray;
                 }

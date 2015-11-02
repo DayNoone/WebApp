@@ -1,4 +1,6 @@
-<div style="margin: 2em" ng-hide="lineClicked" ng-animate="'slide'">
+<span class="modalExitBtn" data-dismiss="modal" ng-click="close()">x</span>
+
+<div style="margin: 2em" ng-hide="lineClicked" ng-animate="'slide'" id="modal">
     <legend>Veifeil</legend>
 
     <table class="table table-bordered">
@@ -19,7 +21,7 @@
             <td class ="ng-binding">{{data.lon}}</td>
             <td class ="ng-binding">{{data.lat}}</td>
             <td class ="ng-binding">{{data.timestamp}}</td>
-            <td class ="ng-binding" style="font-size: 20px; padding-left: 17px" data-ng-class="hasImage(data)"></td>
+            <td class ="ng-binding" style="font-size: 20px; padding-left: 17px; display:table-cell" data-ng-class="hasImage(data)"></td>
             <td class ="ng-binding">{{data.description}}</td>
             </tr>
         </tbody>
@@ -31,7 +33,7 @@
    <div class="row" style="margin-top: 80px">
        <div class="col-md-6" >
            <img ng-if="image.src == 'http://localhost:63342/WebApp/app/resources/noimage.png'" style="width: 100%; height: 100%;" src="{{image.src}}" class="center-block">
-           <img ng-hide="image.src == 'http://localhost:63342/WebApp/app/resources/noimage.png'" src="{{image.src}}" class="center-block">
+           <img ng-hide="image.src == 'http://localhost:63342/WebApp/app/resources/noimage.png'" src="{{image.src}}" class="block" style="max-width: 400px; max-height:400px; float:right">
        </div>
        <div class="col-md-6">
            <span><legend ng-hide="error.description ==''">Beskrivelse</legend></span> <br>
@@ -40,7 +42,7 @@
    </div>
 
     <div class="row" style="line-height: 25px; margin-bottom: 40px; margin-top: 40px">
-        <div class="col-md-4">
+        <div class="col-md-4 text-right">
             <span class="label label-default">BrukerID </span> <br>
             <span class="label label-default">Tidsmerke </span> <br>
             <span class="label label-default">Breddegrad: </span> <br>
