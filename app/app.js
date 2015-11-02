@@ -16,9 +16,9 @@ var app = angular.module('myApp', [
         templateUrl: 'views/view2.html',
         controller: 'view2'
       })
-      .when('/view3', {
-        templateUrl: 'views/view3.html',
-        controller: 'view3'
+      .when('/helpView', {
+        templateUrl: 'views/helpView.html',
+        controller: 'helpView'
       })
 }]);
 

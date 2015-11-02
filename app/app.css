@@ -26,6 +26,12 @@ html, body {
 .page_container .padding_container {
   padding-left: 20px;
   padding-right: 20px;
+  background-color: #eee;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.page_container h2 {
+  margin-top: 0px;
 }
 #map {
   height: 100%;
@@ -33,7 +39,7 @@ html, body {
 }
 
 #loadingScreen {
-  top:60px;
+  top:70px;
   height: 97%;
   width: 100%;
   z-index: 3;
