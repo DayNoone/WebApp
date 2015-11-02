@@ -328,3 +328,24 @@ html, body {
   color:white;
   cursor:pointer;
 }
+
+/* SurveyView */
+
+.survey_table {
+  background-color: white;
+  table-layout:fixed;
+}
+
+.survey_table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+}
+.bool_count_container {
+  background-color: white;
+  height: 40px;
+  line-height: 40px;
+  border: 1px solid;
+  border-color: rgb(221, 221, 221);
+}

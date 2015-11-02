@@ -16,6 +16,10 @@ var app = angular.module('myApp', [
         templateUrl: 'views/view2.html',
         controller: 'view2'
       })
+      .when('/surveyView', {
+          templateUrl: 'views/surveyView.html',
+          controller: 'surveyView'
+      })
       .when('/helpView', {
         templateUrl: 'views/helpView.html',
         controller: 'helpView'
