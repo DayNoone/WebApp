@@ -314,3 +314,29 @@ html, body {
   color:white;
   cursor:pointer;
 }
+
+.exportSelection {
+  width: 230px;
+  height: 180px;
+ /* overflow-y: scroll; */
+}
+.exportSelection a{
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 20px;
+  color: #333333;
+  white-space: nowrap;
+}
+.exportSelection a:hover{
+  cursor:pointer;
+  background-color:rgba(0,0,0,0.1);
+  text-decoration:none;
+}
+
+.dropdown-menu li a:hover {
+  cursor:pointer;
+  background-color:rgba(0,0,0,0.1);
+  text-decoration:none;
+}

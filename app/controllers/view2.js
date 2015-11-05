@@ -955,6 +955,33 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         });
     }
 
+
+    $scope.openExportModal = function () {
+        var modalInstance = $modal.open({
+            templateUrl: 'views/exportModalView.html',
+            controller: 'exportController',
+            size: 'lg',
+            resolve: {
+                dataCollection: function () {
+                    return {
+                        "errors":errors,
+                        "trips":trips,
+                        "fromDate":$scope.fromDate,
+                        "toDate":$scope.toDate,
+                        "fromTime":$scope.fromTime,
+                        "toTime":$scope.toTime
+                    };
+                }
+            }
+        });
+        modalInstance.result.then(function (status) {
+            console.log(status);
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    }
+
+
     function connect() {
         var connectionsResolved = 0;
 
@@ -979,6 +1006,7 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
                         console.log('Loaded trips');
                         //console.log(data)
                         trips = data;
+                        console.log(trips);
                         connectionsResolved++;
                         if(connectionsResolved == 2){
                             console.log("Resolved")

@@ -1,0 +1,83 @@
+<span class="modalExitBtn" data-dismiss="modal" ng-click="close()">x</span>
+
+<div style="margin: 2em" ng-hide="lineClicked" ng-animate="'slide'" id="modal">
+    <legend>Eksporter data</legend>
+
+
+    <div class="row">
+        <div class="dropdown col-md-4 input-group" style="margin-top: 20px" >
+            <span class="input-group-addon">Filtype</span>
+            <button class="btn btn-default dropdown-toggle form-control" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="position:relative">
+                CSV
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" style="left:inherit; padding: inherit;">
+                <li><a class="b" value="csv" ng-click="fileType = 'csv'">csv</a></li>
+                <li><a class="b" value="kml" ng-click="fileType = 'kml'"><strike>kml</strike> Ikke tilgjengelig</a></li>
+                <li><a class="b" value="gpx" ng-click="fileType = 'gpx'"><strike>gpx</strike> Ikke tilgjengelig</a></li>
+            </ul>
+
+        </div>
+        </div>
+
+    <div class="row">
+        <div class="dropdown col-md-4">
+
+            <div class="btn-group" style="margin-top: 5px" data-ng-class="{open: open}">
+                <button class="btn btn-default dropdown-toggle" data-ng-click="open=!open">
+                    Velg data <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                    <li>
+                        <a data-ng-click="selectAll()">
+                            <span class="glyphicon glyphicon-ok-sign"></span> Velg alle</a>
+                    </li>
+                    <li>
+                        <a data-ng-click="unselectAll()">
+                            <i class="glyphicon glyphicon-remove-sign"></i> Velg bort alle</a>
+                    </li>
+                    <li class="divider"></li>
+                    <div class="exportSelection pull-right">
+                        <li>
+                            <a data-ng-click="select('Veifeil')">
+                                Veifeil
+                                <span data-ng-class="isSelected('Veifeil')" id="Veifeil"></span>
+                            </a>
+                            <a data-ng-click="select('Ruter')">
+                                Ruter
+                                <span data-ng-class="isSelected('Ruter')" id="Ruter"></span>
+                            </a>
+                            <a data-ng-click="select('Tur')">
+                                Spesifikk tur
+                                <span data-ng-class="isSelected('Tur')" id="Tur"></span>
+                            </a>
+                                <input type="txt" ng-hide="selectedExports.indexOf('Tur') == -1" placeholder="Id" ng-model="idFilter"/>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Not implemented yet -->
+    <div class="row">
+        <button class="btn btn-primary" data-toggle="button" style="display:block; width:250px; margin:auto;margin-top:3em; line-height:2em;"><strike>Filtrer på gitt dato og tidsintervall</strike></button>
+    </div>
+
+
+
+    <div class="row">
+        <Button download='FileName' ng-hide="selectedExports.indexOf('Veifeil')==-1" class="btn btn-success" type="button" ng-click="finishAndExport()" style="display:block; width:220px; margin:auto;margin-top:3em; line-height:2em; font-size:16pt;">
+            <span class="glyphicon glyphicon-floppy-save"></span>
+            Eksporter Veifeil
+        </Button>
+        <Button download='FileName' ng-hide="selectedExports.indexOf('Ruter')==-1" class="btn btn-success" type="button" ng-click="finishAndExport()" style="display:block; width:220px; margin:auto;margin-top:3em; line-height:2em; font-size:16pt;">
+            <span class="glyphicon glyphicon-floppy-save"></span>
+            Eksporter Ruter
+        </Button>
+        <Button download='FileName' ng-hide="idFilter == ''" class="btn btn-success" type="button" ng-click="finishAndExport()" style="display:block; width:220px; margin:auto;margin-top:3em; line-height:2em; font-size:16pt;">
+            <span class="glyphicon glyphicon-floppy-save"></span>
+            Eksporter Tur
+        </Button>
+    </div>
+</div>
