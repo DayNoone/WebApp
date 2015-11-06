@@ -23,7 +23,6 @@
                         </button>
 
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" required style="margin-left:28px">
-                        <li><a class="b" value="dropdown" ng-click="controller.model.type = 'dropdown'">Dropdown</a></li>
                         <li><a class="b" value="check" ng-click="controller.model.type = 'check'">Checkboxes</a></li>
                         <li><a class="b" value="radio" ng-click="controller.model.type = 'radio'">Radio buttons</a></li>
                         <li><a class="b" value="text" ng-click="controller.model.type = 'text'">Tekst</a></li>
@@ -47,7 +46,7 @@
 
                 <div class="input-group" ng-hide="controller.model.type !== 'link'">
                     <span class="input-group-addon" style="width: 120px">Link :</span>
-                    <textarea class="form-control" placeholder="Link til spørreundersøkelse" ng-model="controller.model.link"></textarea>
+                    <textarea class="form-control" placeholder="Link til spørreundersøkelse" ng-model="controller.model.question"></textarea>
                 </div>
             </div>
             <div class="row" style="margin-top: 20px">
