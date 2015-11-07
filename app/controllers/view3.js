@@ -1,3 +1,3 @@
-app.controller('view3', function($scope) {
+app.controller('helpView', function($scope) {
 
 });

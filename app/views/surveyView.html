@@ -1,0 +1,86 @@
+<div class="page_container">
+    <div class="padding_container" ng-hide="lineClicked">
+        <legend>Spørreskjema</legend>
+
+        <table class="table table-bordered survey_table">
+            <thead>
+            <tr>
+                <th class="tableHeader">Spørsmål
+                <th class="tableHeader">Type
+                <th class="tableHeader">Antall svar
+                <th class="tableHeader">Antall områder
+            </tr>
+            </thead>
+
+            <tbody ng-click="lineClicked = !lineClicked">
+            <tr ng-repeat = "data in surveys" class="ng-scope tableSelection" ng-click="setSurvey(data)">
+                <td class ="ng-binding">{{data.question}}</td>
+                <td class ="ng-binding">{{data.type}}</td>
+                <td class ="ng-binding">{{data.answers.length}}</td>
+                <td class ="ng-binding">{{data.circles.length}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="padding_container" ng-show="lineClicked">
+        <legend>{{survey.title}}</legend>
+        <div class="row" style="line-height: 25px; margin-bottom: 40px; margin-top: 40px;">
+            <div class="col-md-2 text-right">
+                <span class="label label-default">Spørsmål: </span> <br>
+                <span class="label label-default">Type:  </span> <br>
+                <span class="label label-default">Id: </span>
+            </div>
+            <div class="col-md-10">
+                <span>{{survey.question}}</span> <br>
+                <span>{{survey.type}}</span> <br>
+                <span>{{survey._id}}</span> <br>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <legend>Svar</legend>
+                <table ng-hide="boolSurvey" class="table table-bordered survey_table">
+                    <td ng-show="emptySurvey">Ingen svar</td>
+                    <tbody>
+                        <tr ng-repeat = "data in survey.answers" ng-hide="emptySurvey" class="ng-scope tableSelection">
+                            <td class ="ng-binding">{{data.answer}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                <div ng-show="!emptySurvey && boolSurvey">
+                    <div class="col-md-6 bool_count_container"><span style="font-weight: bold;">Ja: </span>{{noCount}}</div>
+                    <div class="col-md-6 bool_count_container"><span style="font-weight: bold;">Nei: </span>{{yesCount}}</div>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <legend>Spørrepunkter</legend>
+                <table class="table table-bordered survey_table">
+                    <thead>
+                    <tr>
+                        <th class="tableHeader">Id
+                        <th class="tableHeader">Breddegrad
+                        <th class="tableHeader">Lengdegrad
+                        <th class="tableHeader">Radius
+                    </tr>
+                    </thead>
+
+                    <tr ng-repeat = "data in survey.circles" class="ng-scope tableSelection">
+                        <td class ="ng-binding">{{data._id}}</td>
+                        <td class ="ng-binding">{{data.lon}}</td>
+                        <td class ="ng-binding">{{data.lat}}</td>
+                        <td class ="ng-binding">{{data.radius}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-12">
+                <span>
+                    <button style="margin-top: 20px" ng-click="lineClicked = !lineClicked" type="button"  class="btn btn-primary">Tilbake </button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
