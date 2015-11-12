@@ -6,11 +6,11 @@ app.controller("roadFaults", function ($scope,$modalInstance, obj) {
 
     $scope.image = new Image();
 
-/*
- * Function called when choosing an error from the error. The parameter error will be the selected error.
+/**
+ * Function called when choosing an error from the error table. The parameter error will be the selected error.
  * Image is here converted from the bas64 format to a presentable format for web-browsers.
+ * @param error The error selected
 */
-
     $scope.setError = function (error) {
         if(error.description.length < 5) {error.desscription = "Ingen beskrivelse tilgjengelig"}
         $scope.error = error;
@@ -30,7 +30,11 @@ app.controller("roadFaults", function ($scope,$modalInstance, obj) {
         "description": "Problem description: He who's face must have an error of 404: nose not found."
     };
 
-
+    /** Returns icon if error has image
+     *
+     * @param error Current error
+     * @returns {*}
+     */
     $scope.hasImage = function (error) {
         if (error.image != null) {
             var image = 'glyphicon glyphicon-ok-sign'

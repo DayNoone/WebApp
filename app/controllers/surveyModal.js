@@ -16,8 +16,10 @@ app.controller("surveyController", function($scope, $http, circles) {
         type: 'text'
     };
 
-    /* Function for saving information about a newly created survey. */
-
+    /** Function for saving information about a newly created survey.
+     *
+     * @param question
+     */
     $scope.save = function (question){
 
         var circlePoints = [];
@@ -65,11 +67,10 @@ app.controller("surveyController", function($scope, $http, circles) {
         for (var i = 0; i < finalQuestion.userIds.length; i++)
             finalQuestion.userIds[i] = finalQuestion.userIds[i].trim();
 
-        console.log("spørsmål: " + question);
+        console.log("spï¿½rsmï¿½l: " + question);
         console.log(finalQuestion);
 
         /* Function for posting newly created surve to database */
-
         $http({
             method : 'POST',
             data : {username: uid, password:pw},

@@ -1,26 +1,85 @@
 app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
+
+
+    // ================= MODELS ========================
     $scope.loadingFinished = false;
     $scope.categoryActive = true
-    $scope.categories_slide = function () {
-        $scope.categoryActive = !$scope.categoryActive;
-    }
     $scope.gmapsActive = true;
+
+    $scope.veifeilIcon = false;
+    $scope.samePathIcon = false;
+    $scope.surveyIcon = false;
+    $scope.speedVarIcon = false;
+
+
+    $scope.pointRadius = 20;
+    $scope.clickRadius = 50;
+    $scope.intensity = 5;
+    $scope.maxIntensity = 20;
+
+    $scope.fromDate = "";
+    $scope.toDate = "";
+
+    $scope.fromTime = "00:00";
+    $scope.toTime = "23:59";
+
+    $scope.currentlySelected = "";
+
+
+    $scope.samePathP1;
+    $scope.samePathP2;
+
+    $scope.samePathArray = [];
+    $scope.surveyPointArray = [];
+
+    $scope.speedVarOpacity = 50;
+    $scope.maxSpeed = 5;
+    $scope.speedAsHeatmap = false;
+
+    $scope.drawnPath = [];
+
+    $scope.hideFinishPathing = true;
+
+
+    $scope.selectedCluster = [];
+    $scope.enableTooltip = false;
+    $scope.enableSamePath = false;
+    $scope.enableSurveyPoints = false;
+
+
+    var samePathPartArray = [];
+    var pathId;
+    var errors;
+    var activeJSONData;
+    var heatmapPoitns;
+    var trips;
+    var path;
+    var heatmap;
+    var tripPath;
+    var pathArray;
+    var pointArray;
+    var clickedPoint;
+    var selectedArea;
+    var map;
+
+    // END OF MODELS
+
+    // =============================  START OF CONTROLLER ================================
+
+    // These two toggles between slide in and out between categories and gmaps
     $scope.gmaps_slide = function () {
         $scope.gmapsActive = !$scope.gmapsActive;
     }
-
-    var map;
+    $scope.categories_slide = function () {
+        $scope.categoryActive = !$scope.categoryActive;
+    }
+    /**
+     * Initializatioin of requirements google maps need
+     */
     init = function () {
         console.log("Init");
 
         var mapStyle = [
-        /**
-         {
-             stylers: [
-                 { hue: "#00ffe6" },
-                 { saturation: 0 }
-             ]
-         }, */
             {
                 featureType: "road.arterial",
                 elementType: "geometry",
@@ -45,43 +104,23 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         });
         map.setOptions({styles: mapStyle});
         data = getFaultPoints();
-        //path = getPath();
-        searchBox = new google.maps.places.SearchBox(input);
-        map.addListener('bounds_changed', function () {
+        searchBox = new google.maps.places.SearchBox(input); //Search for addresses and places
+        map.addListener('bounds_changed', function () { // Not really necessary, since the searchBox is placed outside the map
             searchBox.setBounds(map.getBounds());
         });
+
+        // Add listeners to the map
         addSearchBoxListener();
         addClickListener();
         addHoverListener();
         var heatMapInit = initHeatMap();
-        //while(!heatMapInit){
-        //    heatMapInit = initHeatMap();
-        //}
-        // initTripPath();
         console.log("Google Maps and its APIs has been loaded");
 
     }
 
-    function connect() {/*
-
-
-     $http.get(service_URL + 'trips', {params: {uid: uid, token: pw}})
+    /**
+     * Connect to the server
      */
-        var service_URL = "https://tf2.sintef.no:8084/smioTest/api/";
-        var uid = 'kristhus';
-        var pw = 'pigeon790';
-        $http({
-            method: 'GET',
-            data: {uid: uid, token: pw},
-            url: service_URL + 'trips'
-        })
-            .success(function (data) {
-                console.log("Success");
-            }).error(function () {
-                console.log("Failed");
-            });
-
-    }
 
     connect();
 
@@ -91,11 +130,11 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
      * @returns {*} if checked, return icon, else, icon gets removed
      */
 
-    $scope.veifeilIcon = false;
-    $scope.samePathIcon = false;
-    $scope.surveyIcon = false;
-    $scope.speedVarIcon = false;
-
+    /**Checks if the item is selected, and should have an icon
+     *
+     * @param id of the given
+     * @returns {icon}
+     */
     $scope.isChecked = function (itemId) {
         if (itemId == 'Veifeil') {
             if ($scope.veifeilIcon)
@@ -113,15 +152,18 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         return false;
     }
 
-    function cleanHeatMap() {
-        //heatmap.setMap(null);
-    }
-
+    /**
+     * Sets intensity of the heatmap points
+     */
     $scope.changeIntensity = function(){
         console.log("CHANGE INTENSITY: " + $scope.intensity);
         heatmap.set('maxIntensity',$scope.maxIntensity+1- $scope.intensity)
     }
 
+    /**Sets points to be displayed
+     *
+     * @param itemId id of element pressed
+     */
     $scope.selectedHeatmap = function (itemId) {
         if ($scope.veifeilIcon) {
             $scope.currentlySelected = "";
@@ -148,7 +190,10 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         }
         console.log($scope.currentlySelected);
     }
-
+    /** Selects lines which should be displayed, based on itemid
+     *
+     * @param itemId  id of element selected
+     */
     $scope.selectedLines = function (itemId) {
         // Clear heatmaps
         //heatmap.setMap(null);
@@ -179,9 +224,9 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
      *  Arguments MUST be integers.
      *  There are no floats in an rgb color.
      *
-     * @param cR
-     * @param cG
-     * @param cB
+     * @param cR Red channel
+     * @param cG Green channel
+     * @param cB Blue channel
      * @returns {string}
      */
     function toHex(cR, cG, cB) {
@@ -204,9 +249,6 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         r = 255;
         g = 0;
         b = 0;
-        // 255,0,0 == 0/maxSpeed
-        // 255,255,0 == 0.5*maxSpeed/maxSpeed
-        // 0,255,0 = maxSpeed/maxSpeed
 
         if(speed >= $scope.maxSpeed){return toHex(0,255,0)}//supergreen
         else if(speed >= 0.5*$scope.maxSpeed){ // change red channel
@@ -220,6 +262,9 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         }
     }
 
+    /**
+     * Prepare the map for calculating speed variation.
+     */
     $scope.loadSpeedVar = function() {
         $scope.loadingFinished = false;
         $scope.clearPaths();
@@ -234,6 +279,12 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         }, 10);
     }
 
+    /**
+     * Calculates the speed in a point, and adds a line between
+     * that point and the next in the trip to a list of paths to be drawn
+     * trips must be loaded.
+     * In addition, a heatmap based on the same concept is made.
+     */
     function calculateSpeedVariation(){
         console.log($scope.speedAsHeatmap);
         var curr;
@@ -285,6 +336,9 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         $scope.loadingFinished = true;
     }
 
+    /**
+     * Check if paths are within desired filtration, and converts data to google format.
+     */
     function calculatePath() {
         path = [];
         pathId = [];
@@ -305,47 +359,21 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         //pathArray = new google.maps.MVCArray(path);
     }
 
+    /**
+     * Toggle between map visibility.
+     * Set map to null or to the actual map view
+     */
     function togglePath() {
         angular.forEach($scope.drawnPath, function (trip) {
             trip.setMap(trip.getMap() ? null : map);
         });
     }
 
-
-    $scope.pointRadius = 20;
-    $scope.clickRadius = 50;
-    $scope.intensity = 5;
-    $scope.maxIntensity = 20;
-
-    $scope.fromDate = "";
-    $scope.toDate = "";
-
-    $scope.fromTime = "00:00";
-    $scope.toTime = "23:59";
-
-    $scope.currentlySelected = "";
-
-
-    $scope.samePathP1;
-    $scope.samePathP2;
-
-    $scope.samePathArray = [];
-    $scope.surveyPointArray = [];
-
-    $scope.speedVarOpacity = 50;
-    $scope.maxSpeed = 5;
-    $scope.speedAsHeatmap = false;
-
-    var pathId;
-    var errors;
-    var activeJSONData;
-    var heatmapPoitns;
-    var trips;
-    var path;
-    var heatmap;
-    var tripPath;
-    var pathArray;
-    var pointArray;
+    /**
+     * Initialize The heatmap variables, so that the view is changed
+     * directly based on models set
+     * @returns {boolean} Could not be made
+     */
     var initHeatMap = function () {
         pointArray = new google.maps.MVCArray(trips);
         try {
@@ -367,6 +395,10 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         }
     }
 
+    /**
+     * Add a hover listener to the map, which displays areas you can place, or
+     * use as a selector for points.
+     */
     function addHoverListener() {
         google.maps.event.addListener(map, 'mousemove', function (event) {
             if (selectedArea != null) {
@@ -398,7 +430,10 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         })
     }
 
-
+    /**
+     * Toggle id=enableTooltip pressed
+     * @returns {boolean} Toggled hide
+     */
     $scope.hideHeatMap = function () {
         if ($scope.veifeilIcon) {
             document.getElementById('enableTooltip').className = "btn btn-primary";
@@ -406,6 +441,10 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         return !$scope.veifeilIcon;
     }
 
+    /**
+     * Toggle id=samePathBtn pressed
+     * @returns {boolean} Toggled hide
+     */
     $scope.hideSamePathView = function () {
         if ($scope.samePathIcon) {
             //$scope.enableSamePath = false;
@@ -414,6 +453,10 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         return !$scope.samePathIcon;
     }
 
+    /**
+     * Toggle id=enableSurvey pressed
+     * @returns {boolean} Toggled hide
+     */
     $scope.hideSurvey = function () {
         if($scope.surveyIcon){
             document.getElementById('enableSurvey').className = "btn btn-primary";
@@ -421,6 +464,11 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
 
         return !$scope.surveyIcon;
     }
+
+    /**
+     * Hid the speed variation view
+     * @returns {boolean}
+     */
     $scope.hideSpeedVarView = function() {
         if ($scope.speedVarIcon) {
             //$scope.enableSamePath = false;
@@ -428,9 +476,11 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         return !$scope.speedVarIcon;
     }
 
-    $scope.drawnPath = [];
-    var samePathPartArray = [];
-
+    /**
+     * Drap paths from an array with google latlng points, and set the color of the path
+     * @param pathArr Array with google's LatLng points
+     * @param strokeColor Desired color
+     */
     function drawPaths(pathArr, strokeColor) {
         if(strokeColor==null)
             strokeColor = '#FF0000';
@@ -460,10 +510,12 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
             tmp.id=pathId[index];
             $scope.drawnPath.push(line);
             index++;
-            //  $scope.drawnPath[$scope.drawnPath.length-1].setMap(map); // replaced with map:map
         });
     }
 
+    /**
+     * Remove all paths in tripview
+     */
     $scope.clearPaths = function () {
         console.log("clearing paths");
         while ($scope.drawnPath[0]) {  //Remove circles
@@ -472,6 +524,10 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         samePathPartArray = [];
     }
 
+    /**
+     * Finds the lines which passes through all of the selected areas, samePathArray.
+     * After calculation, these lines are drawn on the map
+     */
     $scope.finishPathing = function () {
         if ($scope.hideFinishPathing) return;
         $scope.clearPaths();
@@ -510,30 +566,14 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
             $scope.samePathArray.pop().setMap(null);
         }
 
-        /** Disabled because of long calculation time
-         angular.forEach(pathArray, function(trip){
-            console.log(trip);
-            angular.forEach(trip, function(point)
-            {
-                if (i != 0) {
-                    if (smoothCoordinates(trip[i - 1], trip[i], i == trip.length)) {
-                        trip.splice(i, 1);
-                        console.log("SPLICED");
-                    }
-                }
-                i++;
-            });
-        });
-
-         */
-        //selectedArea.setMap(null);
         drawPaths(samePathPartArray);
         $scope.hideFinishPathing = true;
         console.log(trips);
     }
 
-    $scope.hideFinishPathing = true;
-
+    /** Toggle heatmap on and off
+     *
+     */
     function toggleHeatmap() {
         if (!heatmap)
             alert("Error with heatmap, try refreshing the page");
@@ -541,22 +581,10 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
             heatmap.setMap(heatmap.getMap() ? null : map);
     }
 
-    /** Takk til Erlend Dahl @smio*/
-    var smoothCoordinates = function (prev, curr, isFinalPoint) {
-        prevTime = timeComparify(prev.time);
-        currTime = timeComparify(curr.time);
-        var distDiff = google.maps.geometry.spherical.computeDistanceBetween(
-            new google.maps.LatLng(prev.lat, prev.lon), new google.maps.LatLng(curr.lat, curr.lon));
-        var timeDiff = moment(curr.time).unix() - moment(prev.time).unix();
-        //var timeDiff = currTime-prevTime;
-        console.log(timeDiff + "_____" + distDiff);
-        return distDiff < 10 * timeDiff || isFinalPoint;
-    }
 
-
-//************============================================******************
-
-
+    /** Initialize the trips and add their models to the view
+     *  Models: pathArray and tripPath
+     */
     function initTripPath() {
         pathArray = new google.maps.MVCArray(path);
         tripPath = new google.maps.Polyline({
@@ -569,10 +597,10 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         });
     }
 
-    function getPoints() {
-        console.log("getPoints");
-    };
-
+    /**Get road faults as an array of LatLng points
+     *
+     * @returns {Array} Google LatLng of road faults
+     */
     function getFaultPoints() {
         dataPoints = [];
         activeJSONData = [];
@@ -588,6 +616,12 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         return dataPoints;
     }
 
+    /** Test dummyData as JSON format
+     * Correct headers containing: Date, Time, lat, lon
+     * @param dummyData Desired JSON
+     *
+     * @returns {Array}
+     */
     function getPath(dummyData) {
         dataPoints = [];
         var i = 0;
@@ -609,13 +643,20 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         return year + "" + month + "" + day;
     }
 
-
+    /**Takes in a date and returns it in a easily comparable format YYYYMMDD
+     *
+     * @param date
+     * @returns {string} Format YYYYMMDD
+     */
     function timeComparify(date) {
         var hours = date.substring(11, 13);
         var minutes = date.substring(14, 16);
         return hours + "" + minutes;
     }
 
+    /**
+     * Refresh models
+     */
     $scope.filterData = function () {
         if ($scope.samePathIcon) {
             $scope.clearPaths();
@@ -638,7 +679,7 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
      * @desc returns true if the data time is in the interval described by the user
      * @param date the datas date
      * @param time the datas time
-     * @returns {boolean}
+     * @returns {boolean} is in chosen interval
      */
     function inInterval(date, time) {
         fromDate = document.getElementById('fromDate').value.replace(/-/g, '');
@@ -658,6 +699,11 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
             return date >= fromDate && date <= toDate;
     }
 
+    /**
+     *
+     * @param time given time
+     * @returns {boolean} time is in selected interval
+     */
     function timeInterval(time) {
         var fromTime = document.getElementById('fromTime').value.replace(/:/, '');
         var toTime = document.getElementById('toTime').value.replace(/:/, '');
@@ -671,19 +717,10 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
             return time >= fromTime && time <= toTime;
     }
 
-
-    /*
-     function getFaultPoints() {
-     return [
-     new google.maps.LatLng(63.41975, 10.40251),
-     new google.maps.LatLng(63.41979, 10.40276),
-     new google.maps.LatLng(63.41971, 10.40272),
-     new google.maps.LatLng(63.41975, 10.40260),
-     new google.maps.LatLng(63.41947, 10.40278)
-     ]};
+    /**
+     * Dummy data for testing purposes
+     * @returns {*[]}
      */
-
-
     function getPopularityPoints() {
         return [
             new google.maps.LatLng(63.41912, 10.39600),
@@ -755,11 +792,17 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
     }
     // END OF GOOGLE DEVELOPER CODE
 
+    /** Change radius of heatmap points
+     *
+     */
     $scope.changePointRadius = function () {
         console.log($scope.pointRadius);
         heatmap.set('radius', parseInt($scope.pointRadius));
     }
 
+    /**
+     * Remove all filtration
+     */
     $scope.resetFilter = function () {
         document.getElementById("fromDate").value = "";
         document.getElementById("toDate").value = "";
@@ -768,14 +811,10 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         filterData();
     }
 
-    $scope.selectedCluster = [];
-    $scope.enableTooltip = false;
-    var clickedPoint;
-    var selectedArea;
-
-    $scope.enableSamePath = false;
-    $scope.enableSurveyPoints = false;
-
+    /**
+     * Toggle buttons on and off
+     * @param button desired button ID
+     */
     $scope.toggleButtons = function(button) {
         if(button == 'enableTooltip'){
             $scope.enableTooltip = !$scope.enableTooltip;
@@ -793,6 +832,11 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         console.log($scope.enableSamePath);
     }
 
+    /**
+     * Adds listeners to the map and child objects
+     * Objects being listened to are:
+     *  surveyPoints, clickedPoint, samePath
+     */
     var addClickListener = function () {
         google.maps.event.addListener(map, 'click', function (event) {
             if (selectedArea != null)
@@ -883,7 +927,10 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         });
     }
 
-
+    /**
+     * Fault points within the selected area
+     * @returns {Array}
+     */
     var proximity = function () {
         cluster = [];
         var i = 0;
@@ -898,11 +945,20 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         return cluster;
     }
 
-
+    /**Returns if the point is within a circle, based on center, radius, and a point
+     *
+     * @param point
+     * @param radius
+     * @param center
+     * @returns {boolean}
+     */
     function pointInCircle(point, radius, center) {
         return (google.maps.geometry.spherical.computeDistanceBetween(point, center) <= radius)
     }
 
+    /**
+     * Selected samePath, and acts accordingly
+     */
     $scope.samePath = function () {
         $scope.clearPaths();
         calculatePath();
@@ -910,7 +966,10 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         console.log("checked");
     }
 
-
+    /**
+     * Open road faults modal and its controller
+     * @param obj Routing object, errors
+     */
     $scope.openModal = function (obj) {
         $scope.enableTooltip = false;
         var modalInstance = $modal.open({
@@ -931,6 +990,9 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         });
     }
 
+    /**
+     * Open road survey modal and its controller
+     */
     $scope.openSurveyModal = function () {
         if($scope.surveyPointArray.length == 0) return;
         var modalInstance = $modal.open({
@@ -955,7 +1017,9 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         });
     }
 
-
+    /**
+     * Open export modal and its controller
+     */
     $scope.openExportModal = function () {
         var modalInstance = $modal.open({
             templateUrl: 'views/exportModalView.html',
@@ -981,13 +1045,15 @@ app.controller('view2', function($scope, $modal, $log, $http, $timeout) {
         });
     }
 
-
+    /**
+     * Connect to the server and retrieve data
+     */
     function connect() {
         var connectionsResolved = 0;
 
         var service_URL = "https://tf2.sintef.no:8084/smioTest/api/";
 
-        var uid = "sondre";
+        var uid = "sondre"; //TODO: Host the website on the server, and make the user login via username and pw
         var pw = "dabchick402";
         //var userid = "560946d9b2af57c413ac8427";
         //var token = "$2a$10$w1BPdOBqiuaYiKJ6a2qYdewOKOdk7fQ.LE3yjf6fvF5/YLtBi2Q8S";

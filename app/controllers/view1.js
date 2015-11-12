@@ -35,7 +35,7 @@ app.controller('surveyView', function($scope, $http) {
     connect()
 
 
-/*
+/**
 * Function called when choosing a survey from the infoWindowContent.
 *
 * */
