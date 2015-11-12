@@ -6,6 +6,11 @@ app.controller("roadFaults", function ($scope,$modalInstance, obj) {
 
     $scope.image = new Image();
 
+/*
+ * Function called when choosing an error from the error. The parameter error will be the selected error.
+ * Image is here converted from the bas64 format to a presentable format for web-browsers.
+*/
+
     $scope.setError = function (error) {
         if(error.description.length < 5) {error.desscription = "Ingen beskrivelse tilgjengelig"}
         $scope.error = error;

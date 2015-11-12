@@ -35,7 +35,10 @@ app.controller('surveyView', function($scope, $http) {
     connect()
 
 
-
+/*
+* Function called when choosing a survey from the infoWindowContent.
+*
+* */
     $scope.setSurvey = function (survey) {
         $scope.emptySurvey = false;
         $scope.boolSurvey = false;
